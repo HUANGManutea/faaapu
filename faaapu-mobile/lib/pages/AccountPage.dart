@@ -13,7 +13,6 @@ class AccountPage extends StatefulWidget {
 
 class AccountPageState extends State<AccountPage> {
   final _usernameController = TextEditingController();
-  final _websiteController = TextEditingController();
 
   var _loading = true;
 
@@ -31,7 +30,6 @@ class AccountPageState extends State<AccountPage> {
           .eq('id', userId)
           .single();
       _usernameController.text = (data['username'] ?? '') as String;
-      _websiteController.text = (data['website'] ?? '') as String;
     } on PostgrestException catch (error) {
       SnackBar(
         content: Text(error.message),
@@ -57,12 +55,10 @@ class AccountPageState extends State<AccountPage> {
       _loading = true;
     });
     final userName = _usernameController.text.trim();
-    final website = _websiteController.text.trim();
     final user = supabase.auth.currentUser;
     final updates = {
       'id': user!.id,
       'username': userName,
-      'website': website,
       'updated_at': DateTime.now().toIso8601String(),
     };
     try {
@@ -116,7 +112,6 @@ class AccountPageState extends State<AccountPage> {
   @override
   void dispose() {
     _usernameController.dispose();
-    _websiteController.dispose();
     super.dispose();
   }
 
@@ -132,11 +127,6 @@ class AccountPageState extends State<AccountPage> {
           TextFormField(
             controller: _usernameController,
             decoration: const InputDecoration(labelText: 'User Name'),
-          ),
-          const SizedBox(height: 18),
-          TextFormField(
-            controller: _websiteController,
-            decoration: const InputDecoration(labelText: 'Website'),
           ),
           const SizedBox(height: 18),
           ElevatedButton(

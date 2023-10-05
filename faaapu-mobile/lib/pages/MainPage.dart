@@ -31,9 +31,9 @@ class MainPageState extends State<MainPage> {
             currentIndex: tabsRouter.activeIndex,
             onTap: (value) => {tabsRouter.setActiveIndex(value)},
             items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: "Accueil"),
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: "Mon fa'a'apu"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.search), label: "Recherche"),
+                  icon: Icon(Icons.search), label: "Encyclopédie"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.account_circle_outlined), label: "Compte"),
             ],
