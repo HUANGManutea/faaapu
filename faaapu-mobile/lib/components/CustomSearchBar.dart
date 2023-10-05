@@ -35,13 +35,12 @@ class CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   void filterPlantList() {
-    log('filterPlantList');
-    log('$selectedLight');
     var selectedUsageNames = selectedUsages.map((selectedUsage) => selectedUsage.name);
     List<int> filteredPlantIds = widget.plants.where((plant) {
-      bool lightCondition = selectedLight == null || plant.lights.contains(selectedLight!.name);
-      bool waterCondition = selectedWater == null || plant.water == selectedWater!.name;
-      bool usageCondition = selectedUsages.isEmpty || ((usageFilterCondition == null || usageFilterCondition == "OR") ? selectedUsageNames.any((usage) => plant.usages.contains(usage)) : selectedUsageNames.every((usage) =>  plant.usages.contains(usage)));
+      // "!isFilterExpanded ||" means we do not use the filter when the advanced filters are not displayed
+      bool lightCondition = !isFilterExpanded || selectedLight == null || plant.lights.contains(selectedLight!.name);
+      bool waterCondition = !isFilterExpanded || selectedWater == null || plant.water == selectedWater!.name;
+      bool usageCondition = !isFilterExpanded || selectedUsages.isEmpty || ((usageFilterCondition == null || usageFilterCondition == "OR") ? selectedUsageNames.any((usage) => plant.usages.contains(usage)) : selectedUsageNames.every((usage) =>  plant.usages.contains(usage)));
       bool nameCondition = nameFilter == '' || plant.name.contains(nameFilter) || plant.scientificName.contains(nameFilter);
       return lightCondition && waterCondition && usageCondition && nameCondition;
     }).map((e) => e.id).toList();
