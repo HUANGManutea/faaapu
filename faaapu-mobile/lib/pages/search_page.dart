@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:faaapu/components/search/CustomSearchBar.dart';
+import 'package:faaapu/components/search/custom_search_bar.dart';
 import 'package:faaapu/components/search/search_plant_card.dart';
 import 'package:faaapu/data/light_repository.dart';
 import 'package:faaapu/data/plant_search_repository.dart';

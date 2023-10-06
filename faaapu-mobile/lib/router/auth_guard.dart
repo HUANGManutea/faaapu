@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:faaapu/router/AppRouter.gr.dart';
-import 'package:faaapu/supabase/Db.dart';
+import 'package:faaapu/router/app_router.gr.dart';
+import 'package:faaapu/supabase/db.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthGuard extends AutoRouteGuard {

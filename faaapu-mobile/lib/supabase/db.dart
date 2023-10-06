@@ -1,7 +1,7 @@
 
 import 'dart:developer';
 
-import 'package:faaapu/config/FaaapuConfig.dart';
+import 'package:faaapu/config/faaapu_config.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> initialize(FaaapuConfig config) async {

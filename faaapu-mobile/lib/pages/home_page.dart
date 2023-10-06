@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:faaapu/supabase/Db.dart';
+import 'package:faaapu/supabase/db.dart';
 import 'package:flutter/material.dart';
 
 @RoutePage()

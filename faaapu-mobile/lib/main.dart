@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:faaapu/config/FaaapuConfig.dart';
-import 'package:faaapu/router/AppRouter.dart';
-import 'package:faaapu/supabase/Db.dart';
+import 'package:faaapu/config/faaapu_config.dart';
+import 'package:faaapu/router/app_router.dart';
+import 'package:faaapu/supabase/db.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer';
 

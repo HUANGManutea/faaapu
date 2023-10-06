@@ -9,11 +9,11 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i6;
-import 'package:faaapu/pages/AccountPage.dart' as _i1;
-import 'package:faaapu/pages/HomePage.dart' as _i2;
-import 'package:faaapu/pages/LoginPage.dart' as _i3;
-import 'package:faaapu/pages/MainPage.dart' as _i4;
-import 'package:faaapu/pages/SearchPage.dart' as _i5;
+import 'package:faaapu/pages/account_page.dart' as _i1;
+import 'package:faaapu/pages/home_page.dart' as _i2;
+import 'package:faaapu/pages/login_page.dart' as _i3;
+import 'package:faaapu/pages/main_page.dart' as _i4;
+import 'package:faaapu/pages/search_page.dart' as _i5;
 import 'package:flutter/material.dart' as _i7;
 
 abstract class $AppRouter extends _i6.RootStackRouter {

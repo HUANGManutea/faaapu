@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:faaapu/router/AppRouter.gr.dart';
+import 'package:faaapu/router/app_router.gr.dart';
 import 'package:flutter/material.dart';
 
-import '../supabase/Db.dart';
+import '../supabase/db.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});

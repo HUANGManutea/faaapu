@@ -2,14 +2,14 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:faaapu/pages/HomePage.dart';
-import 'package:faaapu/supabase/Db.dart';
+import 'package:faaapu/pages/home_page.dart';
+import 'package:faaapu/router/app_router.gr.dart';
+import 'package:faaapu/supabase/db.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../router/AppRouter.gr.dart';
 
 @RoutePage()
 class LoginPage extends StatefulWidget {

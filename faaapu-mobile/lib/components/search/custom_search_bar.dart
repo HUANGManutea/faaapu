@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:faaapu/components/search/FilterSection.dart';
-import 'package:faaapu/components/search/MultiFilterSection.dart';
+import 'package:faaapu/components/search/filter_section.dart';
+import 'package:faaapu/components/search/multi_filter_section.dart';
 import 'package:faaapu/model/plant_search.dart';
 import 'package:faaapu/model/plant-properties/light_property.dart';
 import 'package:faaapu/model/plant-properties/usage_property.dart';

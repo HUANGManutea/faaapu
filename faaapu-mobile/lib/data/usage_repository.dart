@@ -5,7 +5,7 @@ import 'package:faaapu/model/plant-properties/light_property.dart';
 import 'package:faaapu/model/plant-properties/usage_property.dart';
 import 'package:faaapu/model/plant-properties/water_property.dart';
 import 'package:faaapu/model/plant_search.dart';
-import 'package:faaapu/supabase/Db.dart';
+import 'package:faaapu/supabase/db.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
