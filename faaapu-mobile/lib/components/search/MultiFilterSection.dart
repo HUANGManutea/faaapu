@@ -40,7 +40,8 @@ class MultiFilterSectionState extends State<MultiFilterSection> {
       children: [
         Row(
           children: [
-            Text(widget.title),
+            Text(widget.title, style: const TextStyle(fontSize: 16)),
+            const SizedBox(width: 20),
             DropdownButton(value: selectedCondition, items: conditions.map((option) {
               return DropdownMenuItem(value: option, child: Text(option));
             }).toList(), onChanged: (newValue) {
@@ -53,6 +54,7 @@ class MultiFilterSectionState extends State<MultiFilterSection> {
             })
           ],
         ),
+        const SizedBox(height: 5),
         Row(
           children: [
             for (var item in widget.items)

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 abstract class SimpleProperty {
   int id;
   String name;
@@ -9,8 +11,14 @@ abstract class SimpleProperty {
     this.description,
   });
 
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "description": description,
+  };
+
   @override
   String toString() {
-    return "{id: $id, name: $name, description: $description}";
+    return jsonEncode(toJson());
   }
 }

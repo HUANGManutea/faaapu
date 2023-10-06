@@ -14,6 +14,7 @@ import 'package:faaapu/pages/HomePage.dart' as _i2;
 import 'package:faaapu/pages/LoginPage.dart' as _i3;
 import 'package:faaapu/pages/MainPage.dart' as _i4;
 import 'package:faaapu/pages/SearchPage.dart' as _i5;
+import 'package:flutter/material.dart' as _i7;
 
 abstract class $AppRouter extends _i6.RootStackRouter {
   $AppRouter({super.navigatorKey});
@@ -41,13 +42,15 @@ abstract class $AppRouter extends _i6.RootStackRouter {
     MainRoute.name: (routeData) {
       return _i6.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i4.MainPage(),
+        child: _i4.MainPage(),
       );
     },
     SearchRoute.name: (routeData) {
+      final args = routeData.argsAs<SearchRouteArgs>(
+          orElse: () => const SearchRouteArgs());
       return _i6.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i5.SearchPage(),
+        child: _i5.SearchPage(key: args.key),
       );
     },
   };
@@ -104,21 +107,36 @@ class MainRoute extends _i6.PageRouteInfo<void> {
           initialChildren: children,
         );
 
-  static const String name = 'MainRoute';
+  static const String name = 'MainRouteState';
 
   static const _i6.PageInfo<void> page = _i6.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i5.SearchPage]
-class SearchRoute extends _i6.PageRouteInfo<void> {
-  const SearchRoute({List<_i6.PageRouteInfo>? children})
-      : super(
+class SearchRoute extends _i6.PageRouteInfo<SearchRouteArgs> {
+  SearchRoute({
+    _i7.Key? key,
+    List<_i6.PageRouteInfo>? children,
+  }) : super(
           SearchRoute.name,
+          args: SearchRouteArgs(key: key),
           initialChildren: children,
         );
 
   static const String name = 'SearchRoute';
 
-  static const _i6.PageInfo<void> page = _i6.PageInfo<void>(name);
+  static const _i6.PageInfo<SearchRouteArgs> page =
+      _i6.PageInfo<SearchRouteArgs>(name);
+}
+
+class SearchRouteArgs {
+  const SearchRouteArgs({this.key});
+
+  final _i7.Key? key;
+
+  @override
+  String toString() {
+    return 'SearchRouteArgs{key: $key}';
+  }
 }

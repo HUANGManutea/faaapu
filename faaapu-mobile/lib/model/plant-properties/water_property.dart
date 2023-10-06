@@ -14,4 +14,5 @@ class WaterProperty extends SimpleProperty {
       description: json['description'],
     );
   }
+
 }

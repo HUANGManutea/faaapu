@@ -22,10 +22,11 @@ class MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return AutoTabsRouter(
-      routes: const [HomeRoute(), SearchRoute(), AccountRoute()],
+      routes: [const HomeRoute(), SearchRoute(), const AccountRoute()],
       builder: (context, child) {
         final tabsRouter = AutoTabsRouter.of(context);
         return Scaffold(
+          resizeToAvoidBottomInset : false,
           body: child,
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: tabsRouter.activeIndex,

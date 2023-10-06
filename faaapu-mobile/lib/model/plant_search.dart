@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class PlantSearch {
   int id;
   String name;
@@ -79,8 +81,29 @@ class PlantSearch {
     );
   }
 
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+        "scientific_name": scientificName,
+        "image_url": imageUrl,
+        "family": {"name": family},
+        "growth": {"name": growth},
+        "foliage": {"name": foliage},
+        "shape": {"name": name},
+        "water": {"name": water},
+        "lifespan": {"name": lifespan},
+        "difficulty": {"name": difficulty},
+        "type": {"name": type},
+        "usages": usages,
+        "lights": lights,
+        "low_height": lowHeight,
+        "high_height": highHeight,
+        "low_width": lowWidth,
+        "high_width": highWidth,
+      };
+
   @override
   String toString() {
-    return "{id: $id, name: $name, scientificName: $scientificName, imageUrl: $imageUrl, family: $family, growth: $growth, foliage: $foliage, shape: $shape, water: $water, lifespan: $lifespan, difficulty: $difficulty, type: $type, usages: $usages, lights: $lights, lowHeight: $lowHeight, highHeight: $highHeight, lowWidth: $lowWidth, highWidth: $highWidth}";
+    return jsonEncode(toJson());
   }
 }

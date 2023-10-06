@@ -29,7 +29,8 @@ class FilterSectionState extends State<FilterSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.title),
+        Text(widget.title, style: const TextStyle(fontSize: 16)),
+        const SizedBox(height: 5),
         Row(
           children: [
             for (var item in widget.items)
