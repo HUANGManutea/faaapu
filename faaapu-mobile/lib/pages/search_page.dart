@@ -11,6 +11,7 @@ import 'package:faaapu/model/plant-properties/light_property.dart';
 import 'package:faaapu/model/plant-properties/usage_property.dart';
 import 'package:faaapu/model/plant-properties/water_property.dart';
 import 'package:faaapu/model/plant_search.dart';
+import 'package:faaapu/router/app_router.gr.dart';
 import 'package:flutter/material.dart';
 
 @RoutePage()
@@ -68,6 +69,10 @@ class SearchPageState extends State<SearchPage> {
     log("this.filteredPlants: ${this.filteredPlants}");
   }
 
+  void onPlantSelected(PlantSearch plant) {
+    AutoRouter.of(context).navigate(PlantDetailsRoute(id: plant.id));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,7 +90,7 @@ class SearchPageState extends State<SearchPage> {
                     onPlantFilter: onPlantFilter),
                 Column(children: [
                   for (var plant in filteredPlants)
-                    SearchPlantCard(plant: plant)
+                    SearchPlantCard(plant: plant, onTap: onPlantSelected,)
                 ])
               ],
             ),

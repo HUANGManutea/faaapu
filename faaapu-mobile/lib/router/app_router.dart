@@ -21,6 +21,7 @@ class AppRouter extends $AppRouter {
           AutoRoute(page: HomeRoute.page, guards: [AuthGuard()]),
           AutoRoute(page: AccountRoute.page, guards: [AuthGuard()]),
           AutoRoute(page: SearchRoute.page, guards: [AuthGuard()]),
-        ])
+        ]),
+    AutoRoute(page: PlantDetailsRoute.page, path: '/plants/:id')
       ];
 }
