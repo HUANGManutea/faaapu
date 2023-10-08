@@ -14,8 +14,10 @@ import 'package:faaapu/model/plant-properties/water_property.dart';
 import 'package:faaapu/model/plant_search.dart';
 import 'package:faaapu/model/zone.dart';
 import 'package:faaapu/router/app_router.gr.dart';
+import 'package:faaapu/state/zone_cubit.dart';
 import 'package:faaapu/supabase/db.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
 class SearchPage extends StatefulWidget {
@@ -36,14 +38,12 @@ class SearchPageState extends State<SearchPage> {
   List<UsageProperty> usageProperties = [];
   List<PlantSearch> plantSearches = [];
   List<PlantSearch> filteredPlants = [];
-  List<Zone> zones = [];
 
   @override
   void initState() {
     super.initState();
     getPlants();
     getFilters();
-    getZones();
   }
 
   void getPlants() async {
@@ -51,17 +51,6 @@ class SearchPageState extends State<SearchPage> {
     setState(() {
       plantSearches = plants;
       filteredPlants = plants;
-    });
-  }
-
-  void getZones() async {
-    var zones = await supabase
-        .from('zone')
-        .select<List<Map<String, dynamic>>>('id, name')
-        .withConverter(
-            (zones) => zones.map((zone) => Zone.fromJson(zone)).toList());
-    setState(() {
-      this.zones = zones;
     });
   }
 
@@ -92,18 +81,19 @@ class SearchPageState extends State<SearchPage> {
   void onAddPlant(PlantSearch plant) {
     showModalBottomSheet(
         context: context,
-        builder: (context) => DraggableScrollableSheet(
-          initialChildSize: 1,
+        builder: (context) => BlocBuilder<ZoneCubit, List<Zone>>(builder: (context, zones) => DraggableScrollableSheet(
+            initialChildSize: 1,
             minChildSize: 1,
             builder:
                 (BuildContext context, ScrollController scrollController) =>
-                    AddPlantModal(
-                        title: "Ajouter à une zone",
-                        zones: zones,
-                        onZoneSelected: (Zone zone) {
-                          onAddPlantToZone(zone, plant);
-                          Navigator.of(context).pop();
-                        })));
+                AddPlantModal(
+                    title: "Ajouter à une zone",
+                    zones: zones,
+                    onZoneSelected: (Zone zone) {
+                      onAddPlantToZone(zone, plant);
+                      context.read<ZoneCubit>().fetchZonesWithPlants();
+                      Navigator.of(context).pop();
+                    }))));
   }
 
   void onAddPlantToZone(Zone zone, PlantSearch plant) async {

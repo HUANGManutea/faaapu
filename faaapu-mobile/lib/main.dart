@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:faaapu/config/faaapu_config.dart';
 import 'package:faaapu/router/app_router.dart';
+import 'package:faaapu/state/zone_cubit.dart';
 import 'package:faaapu/supabase/db.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer';
 
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -30,7 +32,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppRouter appRouter = AppRouter();
-    return MaterialApp.router(
+    return BlocProvider(create: (_) => ZoneCubit()..fetchZonesWithPlants(), child:  MaterialApp.router(
       title: "Fa'a'apu",
       theme: ThemeData.light().copyWith(
         primaryColor: Colors.green,
@@ -47,6 +49,6 @@ class MyApp extends StatelessWidget {
         ),
       ),
       routerConfig: appRouter.config(),
-    );
+    ),);
   }
 }

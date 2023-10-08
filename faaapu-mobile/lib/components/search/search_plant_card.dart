@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 class SearchPlantCard extends StatelessWidget {
   final PlantSearch plant;
   final Function(PlantSearch) onDetailsTap;
-  final Function(PlantSearch) onAddToGardenTap;
+  final Function(PlantSearch)? onAddToGardenTap;
+  final Function(PlantSearch)? onRemoveFromGardenTap;
 
   const SearchPlantCard(
       {super.key,
       required this.plant,
       required this.onDetailsTap,
-      required this.onAddToGardenTap});
+      this.onAddToGardenTap, this.onRemoveFromGardenTap});
 
   @override
   Widget build(BuildContext context) {
@@ -57,12 +58,25 @@ class SearchPlantCard extends StatelessWidget {
                                         onDetailsTap(plant);
                                       },
                                       child: const Text("Voir la fiche")),
-                                  const SizedBox(width: 5),
-                                  ElevatedButton(
-                                      onPressed: () {
-                                        onAddToGardenTap(plant);
-                                      },
-                                      child: const Text("Ajouter")),
+                                  if (onAddToGardenTap != null)
+                                    Row(children: [
+                                      const SizedBox(width: 5),
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            onAddToGardenTap!(plant);
+                                          },
+                                          child: const Text("Ajouter")),
+                                    ],),
+                                  if (onRemoveFromGardenTap != null)
+                                    Row(children: [
+                                      const SizedBox(width: 5),
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            onRemoveFromGardenTap!(plant);
+                                          },
+                                          style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red)),
+                                          child: const Text("Retirer")),
+                                    ],)
                                 ])
                           ])))
             ])));
