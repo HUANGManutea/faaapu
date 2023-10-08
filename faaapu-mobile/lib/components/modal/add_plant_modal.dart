@@ -2,13 +2,11 @@ import 'package:faaapu/model/zone.dart';
 import 'package:flutter/material.dart';
 
 class AddPlantModal extends StatelessWidget {
-  final String title;
   final List<Zone> zones;
   final Function(Zone) onZoneSelected;
 
   const AddPlantModal(
       {super.key,
-      required this.title,
       required this.zones,
       required this.onZoneSelected});
 
@@ -20,8 +18,8 @@ class AddPlantModal extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(title,
-                    style: const TextStyle(
+                const Text("Ajouter à une zone",
+                    style: TextStyle(
                         fontSize: 24, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
                 Column(

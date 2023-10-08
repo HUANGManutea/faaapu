@@ -7,24 +7,51 @@ class ZoneContainer extends StatelessWidget {
   final Zone zone;
   final Function(PlantSearch) onDetailsTap;
   final Function(Zone, PlantSearch) onRemoveFromGardenTap;
+  final Function(Zone) onDeleteZone;
 
-  const ZoneContainer({super.key, required this.zone, required this.onDetailsTap, required this.onRemoveFromGardenTap});
+  const ZoneContainer(
+      {super.key,
+      required this.zone,
+      required this.onDetailsTap,
+      required this.onRemoveFromGardenTap,
+      required this.onDeleteZone});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Card(child: Padding(padding: const EdgeInsets.all(5), child: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(zone.name,
-            style:
-            const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        for(var plant in zone.plants)
-          SearchPlantCard(
-              plant: plant, onDetailsTap: onDetailsTap, onRemoveFromGardenTap: (PlantSearch plant) {
-                onRemoveFromGardenTap(zone, plant);
-          })
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(zone.name,
+                style:
+                const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            ElevatedButton(
+                onPressed: () {
+                  onDeleteZone(zone);
+                },
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.red)),
+                child: const Text('Supprimer'))
+          ],
+        ),
+        if (zone.plants.isEmpty)
+          const Text("Aucune plante dans cette zone",
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.italic))
+        else
+          for (var plant in zone.plants)
+            SearchPlantCard(
+                plant: plant,
+                onDetailsTap: onDetailsTap,
+                onRemoveFromGardenTap: (PlantSearch plant) {
+                  onRemoveFromGardenTap(zone, plant);
+                })
       ],
-    );
+    ))) ;
   }
 }

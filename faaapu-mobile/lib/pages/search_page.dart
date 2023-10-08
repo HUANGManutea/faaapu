@@ -78,7 +78,7 @@ class SearchPageState extends State<SearchPage> {
     AutoRouter.of(context).navigate(PlantDetailsRoute(id: plant.id));
   }
 
-  void onAddPlant(PlantSearch plant) {
+  void showAddPlantModal(PlantSearch plant) {
     showModalBottomSheet(
         context: context,
         builder: (context) => BlocBuilder<ZoneCubit, List<Zone>>(builder: (context, zones) => DraggableScrollableSheet(
@@ -87,7 +87,6 @@ class SearchPageState extends State<SearchPage> {
             builder:
                 (BuildContext context, ScrollController scrollController) =>
                 AddPlantModal(
-                    title: "Ajouter à une zone",
                     zones: zones,
                     onZoneSelected: (Zone zone) {
                       onAddPlantToZone(zone, plant);
@@ -122,7 +121,7 @@ class SearchPageState extends State<SearchPage> {
                     SearchPlantCard(
                         plant: plant,
                         onDetailsTap: onViewPlant,
-                        onAddToGardenTap: onAddPlant)
+                        onAddToGardenTap: showAddPlantModal)
                 ])
               ],
             ),
