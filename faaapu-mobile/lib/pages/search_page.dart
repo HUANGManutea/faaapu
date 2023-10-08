@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:faaapu/components/modal/add_plant_modal.dart';
 import 'package:faaapu/components/search/custom_search_bar.dart';
 import 'package:faaapu/components/search/search_plant_card.dart';
 import 'package:faaapu/data/light_repository.dart';
@@ -11,7 +12,9 @@ import 'package:faaapu/model/plant-properties/light_property.dart';
 import 'package:faaapu/model/plant-properties/usage_property.dart';
 import 'package:faaapu/model/plant-properties/water_property.dart';
 import 'package:faaapu/model/plant_search.dart';
+import 'package:faaapu/model/zone.dart';
 import 'package:faaapu/router/app_router.gr.dart';
+import 'package:faaapu/supabase/db.dart';
 import 'package:flutter/material.dart';
 
 @RoutePage()
@@ -33,12 +36,14 @@ class SearchPageState extends State<SearchPage> {
   List<UsageProperty> usageProperties = [];
   List<PlantSearch> plantSearches = [];
   List<PlantSearch> filteredPlants = [];
+  List<Zone> zones = [];
 
   @override
   void initState() {
     super.initState();
     getPlants();
     getFilters();
+    getZones();
   }
 
   void getPlants() async {
@@ -46,6 +51,17 @@ class SearchPageState extends State<SearchPage> {
     setState(() {
       plantSearches = plants;
       filteredPlants = plants;
+    });
+  }
+
+  void getZones() async {
+    var zones = await supabase
+        .from('zone')
+        .select<List<Map<String, dynamic>>>('id, name')
+        .withConverter(
+            (zones) => zones.map((zone) => Zone.fromJson(zone)).toList());
+    setState(() {
+      this.zones = zones;
     });
   }
 
@@ -69,8 +85,31 @@ class SearchPageState extends State<SearchPage> {
     log("this.filteredPlants: ${this.filteredPlants}");
   }
 
-  void onPlantSelected(PlantSearch plant) {
+  void onViewPlant(PlantSearch plant) {
     AutoRouter.of(context).navigate(PlantDetailsRoute(id: plant.id));
+  }
+
+  void onAddPlant(PlantSearch plant) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) => DraggableScrollableSheet(
+          initialChildSize: 1,
+            minChildSize: 1,
+            builder:
+                (BuildContext context, ScrollController scrollController) =>
+                    AddPlantModal(
+                        title: "Ajouter à une zone",
+                        zones: zones,
+                        onZoneSelected: (Zone zone) {
+                          onAddPlantToZone(zone, plant);
+                          Navigator.of(context).pop();
+                        })));
+  }
+
+  void onAddPlantToZone(Zone zone, PlantSearch plant) async {
+    await supabase
+        .from('zone_plant')
+        .insert({"zone_id": zone.id, "plant_id": plant.id});
   }
 
   @override
@@ -90,7 +129,10 @@ class SearchPageState extends State<SearchPage> {
                     onPlantFilter: onPlantFilter),
                 Column(children: [
                   for (var plant in filteredPlants)
-                    SearchPlantCard(plant: plant, onTap: onPlantSelected,)
+                    SearchPlantCard(
+                        plant: plant,
+                        onDetailsTap: onViewPlant,
+                        onAddToGardenTap: onAddPlant)
                 ])
               ],
             ),

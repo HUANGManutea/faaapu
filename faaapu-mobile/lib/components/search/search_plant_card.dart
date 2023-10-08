@@ -4,15 +4,20 @@ import 'package:flutter/material.dart';
 
 class SearchPlantCard extends StatelessWidget {
   final PlantSearch plant;
-  final Function(PlantSearch) onTap;
+  final Function(PlantSearch) onDetailsTap;
+  final Function(PlantSearch) onAddToGardenTap;
 
-  const SearchPlantCard({super.key, required this.plant, required this.onTap});
+  const SearchPlantCard(
+      {super.key,
+      required this.plant,
+      required this.onDetailsTap,
+      required this.onAddToGardenTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          onTap(plant);
+          onDetailsTap(plant);
         },
         child: Card(
             clipBehavior: Clip.hardEdge,
@@ -21,8 +26,8 @@ class SearchPlantCard extends StatelessWidget {
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               CachedNetworkImage(
                 imageUrl: plant.imageUrl,
-                height: 100,
-                width: 100,
+                height: 130,
+                width: 130,
                 fit: BoxFit.fitHeight,
                 alignment: FractionalOffset.topCenter,
                 placeholder: (context, url) =>
@@ -31,23 +36,35 @@ class SearchPlantCard extends StatelessWidget {
                     const Icon(Icons.error_outline),
               ),
               const SizedBox(width: 5),
-              Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Flex(direction: Axis.vertical, children: [
-                          Text(plant.name,
-                              style: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold)),
-                        ],),
-                        const SizedBox(height: 5),
-                        Flex(direction: Axis.vertical, children: [
-                          Text(plant.scientificName,
-                              style: const TextStyle(
-                                  fontSize: 20, fontStyle: FontStyle.italic))
-                        ],)
-                      ]))
+              Flexible(
+                  child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(plant.name,
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 5),
+                            Text(plant.scientificName,
+                                style: const TextStyle(
+                                    fontSize: 20, fontStyle: FontStyle.italic)),
+                            const SizedBox(height: 5),
+                            Row(
+                                children: [
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        onDetailsTap(plant);
+                                      },
+                                      child: const Text("Voir la fiche")),
+                                  const SizedBox(width: 5),
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        onAddToGardenTap(plant);
+                                      },
+                                      child: const Text("Ajouter")),
+                                ])
+                          ])))
             ])));
   }
 }
