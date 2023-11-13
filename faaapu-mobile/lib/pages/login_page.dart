@@ -50,7 +50,6 @@ class LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _signUp() async {
-    log("email: ${_emailController.text}, password: ${_passwordController.text}");
     try {
       setState(() {
         _isLoading = true;

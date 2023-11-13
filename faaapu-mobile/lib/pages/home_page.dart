@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:faaapu/components/faaapu/create_zone_modal.dart';
+import 'package:faaapu/components/faaapu/delete_zone_modal.dart';
 import 'package:faaapu/components/faaapu/zone_container.dart';
 import 'package:faaapu/model/plant_search.dart';
 import 'package:faaapu/model/zone.dart';
@@ -37,8 +38,9 @@ class HomePageState extends State<HomePage> {
         .eq("plant_id", plant.id);
   }
 
-  void deleteZone(Zone zone) async {
+  void deleteZone(Zone zone, ZoneCubit zoneCubit) async {
     await supabase.from('zone').delete().eq('id', zone.id);
+    zoneCubit.fetchZonesWithPlants();
   }
 
   void createZone(String name, ZoneCubit zoneCubit) async {
@@ -49,6 +51,25 @@ class HomePageState extends State<HomePage> {
       await supabase.from('zone').insert({'name': name, 'profile_id': user.id});
       zoneCubit.fetchZonesWithPlants();
     }
+  }
+
+  void showDeleteZoneModal(Zone zone) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) => BlocBuilder<ZoneCubit, List<Zone>>(
+            builder: (context, zones) => DraggableScrollableSheet(
+                initialChildSize: 1,
+                minChildSize: 1,
+                builder:
+                    (BuildContext context, ScrollController scrollController) =>
+                        DeleteZoneModal(
+                            zoneName: zone.name,
+                            onDeleteZone: (bool result) {
+                              if (result) {
+                                deleteZone(zone, context.read<ZoneCubit>());
+                              }
+                              Navigator.of(context).pop();
+                            }))));
   }
 
   void showCreateZoneModal() {
@@ -77,10 +98,7 @@ class HomePageState extends State<HomePage> {
                       ZoneContainer(
                           zone: zone,
                           onDetailsTap: onViewPlant,
-                          onDeleteZone: (Zone zone) {
-                            deleteZone(zone);
-                            context.read<ZoneCubit>().fetchZonesWithPlants();
-                          },
+                          onDeleteZone: showDeleteZoneModal,
                           onRemoveFromGardenTap:
                               (Zone zone, PlantSearch plant) {
                             onRemovePlantFromGarden(zone, plant);

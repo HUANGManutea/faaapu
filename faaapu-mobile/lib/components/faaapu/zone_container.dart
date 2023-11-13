@@ -23,18 +23,17 @@ class ZoneContainer extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(zone.name,
                 style:
                 const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            ElevatedButton(
-                onPressed: () {
-                  onDeleteZone(zone);
-                },
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.red)),
-                child: const Text('Supprimer'))
+            IconButton(
+              icon: const Icon(Icons.delete_outline),
+              tooltip: 'Supprimer la zone',
+              onPressed: () {
+                onDeleteZone(zone);
+              },
+            ),
           ],
         ),
         if (zone.plants.isEmpty)

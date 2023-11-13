@@ -195,8 +195,8 @@ class PlantDetailsPageState extends State<PlantDetailsPage> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                if (state.plant!.contentUrl != null)
-                  Markdown(data: state.plant!.contentUrl!)
+                if (state.plant!.content != null)
+                  MarkdownBody(data: state.plant!.content!)
               ])
             ] else ...[
               const CircularProgressIndicator()

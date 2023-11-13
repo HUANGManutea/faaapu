@@ -1,4 +1,3 @@
-import 'package:faaapu/model/zone.dart';
 import 'package:flutter/material.dart';
 
 class CreateZoneModal extends StatefulWidget {

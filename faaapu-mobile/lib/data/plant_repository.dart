@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:faaapu/data/base_repository.dart';
 import 'package:faaapu/model/cache/cached-plant-repository.dart';
@@ -19,6 +20,7 @@ class PlantRepository extends BaseRepository {
     final sharedPreferences = await SharedPreferences.getInstance();
     final cachedData = sharedPreferences.getString(key);
     if (cachedData != null) {
+      log('cachedData, $cachedData');
       cachedPlantRepository =
           CachedPlantRepository.fromJson(jsonDecode(cachedData) as Map<String, dynamic>);
     } else {
@@ -112,11 +114,12 @@ class PlantRepository extends BaseRepository {
         .withConverter((plantResult) => Plant.fromJson(plantResult));
 
     final imageUrl =
-    supabase.storage.from('plants/images').getPublicUrl(plant.imageUrl);
+    supabase.storage.from('plants').getPublicUrl('images/${plant.imageUrl}');
     plant.imageUrl = imageUrl;
 
+
     if (plant.contentUrl != null) {
-      final contentRawFile = await supabase.storage.from('plants/contents').download(plant.contentUrl!);
+      final contentRawFile = await supabase.storage.from('plants').download('contents/${plant.contentUrl}');
       final String markdownContent = String.fromCharCodes(contentRawFile);
       plant.content = markdownContent;
     }
@@ -150,7 +153,7 @@ class PlantRepository extends BaseRepository {
     // get the plant image
     for (var plant in plants) {
       final imageUrl =
-      supabase.storage.from('plants/images').getPublicUrl(plant.imageUrl);
+      supabase.storage.from('plants').getPublicUrl('images/${plant.imageUrl}');
       plant.imageUrl = imageUrl;
     }
 

@@ -65,7 +65,11 @@ class SearchPlantCard extends StatelessWidget {
                                           onPressed: () {
                                             onAddToGardenTap!(plant);
                                           },
-                                          child: const Text("Ajouter")),
+                                          child: const Text("Ajouter"),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.blueAccent
+                                        ),
+                                      ),
                                     ],),
                                   if (onRemoveFromGardenTap != null)
                                     Row(children: [
