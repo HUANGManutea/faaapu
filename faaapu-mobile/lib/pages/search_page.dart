@@ -17,7 +17,6 @@ import '../state/plant_search/plant_search_state.dart';
 
 @RoutePage()
 class SearchPage extends StatefulWidget {
-
   SearchPage({super.key});
 
   @override
@@ -25,7 +24,6 @@ class SearchPage extends StatefulWidget {
 }
 
 class SearchPageState extends State<SearchPage> {
-
   @override
   void initState() {
     super.initState();
@@ -69,15 +67,19 @@ class SearchPageState extends State<SearchPage> {
             Column(
               children: [
                 const CustomSearchBar(),
-      BlocBuilder<PlantSearchBloc, PlantSearchState>(
-        builder: (context, state) =>
-                Column(children: [
-                  for (var plant in state.filteredPlantSearches)
-                    SearchPlantCard(
-                        plant: plant,
-                        onDetailsTap: onViewPlant,
-                        onAddToGardenTap: showAddPlantModal)
-                ]))
+                BlocBuilder<PlantSearchBloc, PlantSearchState>(
+                    builder: (context, state) =>
+                        Column(children: [
+                          if (state.status == PlantSearchStatus.success) ...[
+                            for (var plant in state.filteredPlantSearches)
+                              SearchPlantCard(
+                                  plant: plant,
+                                  onDetailsTap: onViewPlant,
+                                  onAddToGardenTap: showAddPlantModal)
+                          ] else ... [
+                            const Text('Chargement')
+                          ]
+                        ]))
               ],
             ),
           ],

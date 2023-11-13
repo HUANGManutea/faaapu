@@ -64,7 +64,7 @@ class ZoneRepository extends BaseRepository {
     for (var zone in zones) {
       for (var plant in zone.plants) {
         final imageUrl =
-        supabase.storage.from('plants').getPublicUrl(plant.imageUrl);
+        supabase.storage.from('plants/images').getPublicUrl(plant.imageUrl);
         plant.imageUrl = imageUrl;
       }
     }

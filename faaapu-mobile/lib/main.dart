@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:faaapu/config/faaapu_config.dart';
-import 'package:faaapu/data/plant_search_repository.dart';
+import 'package:faaapu/data/plant_repository.dart';
 import 'package:faaapu/router/app_router.dart';
 import 'package:faaapu/state/light_cubit.dart';
 import 'package:faaapu/state/plant_search/plant_search_bloc.dart';
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     AppRouter appRouter = AppRouter();
     return BlocProvider<PlantSearchBloc>(create: (context) {
-      return PlantSearchBloc(plantSearchRepository: PlantSearchRepository())..add(PlantSearchLoaded());
+      return PlantSearchBloc(plantSearchRepository: PlantRepository())..add(PlantSearchLoaded());
     }, child: MultiBlocProvider(
         providers: [
           BlocProvider<ZoneCubit>(

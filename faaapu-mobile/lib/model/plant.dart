@@ -29,43 +29,37 @@ class Plant {
   num? highHeight;
   num? lowWidth;
   num? highWidth;
-  String? description;
-  String? plantAdvice;
-  String? maintenanceAdvice;
-  String? info;
+  String? contentUrl;
+  String? content;
 
-  Plant({
-    required this.id,
-    required this.name,
-    required this.scientificName,
-    required this.imageUrl,
-    required this.family,
-    required this.growth,
-    required this.foliage,
-    required this.shape,
-    required this.water,
-    required this.lifespan,
-    required this.difficulty,
-    required this.type,
-    required this.usages,
-    required this.lights,
-    required this.bloomSeasons,
-    required this.harvestSeasons,
-    required this.pruneSeasons,
-    required this.plantingSeasons,
-    required this.plantingMethods,
-    required this.soilHumidities,
-    required this.soilPhs,
-    required this.soilTypes,
-    this.lowHeight,
-    this.highHeight,
-    this.lowWidth,
-    this.highWidth,
-    this.description,
-    this.plantAdvice,
-    this.maintenanceAdvice,
-    this.info,
-  });
+  Plant(
+      {required this.id,
+      required this.name,
+      required this.scientificName,
+      required this.imageUrl,
+      required this.family,
+      required this.growth,
+      required this.foliage,
+      required this.shape,
+      required this.water,
+      required this.lifespan,
+      required this.difficulty,
+      required this.type,
+      required this.usages,
+      required this.lights,
+      required this.bloomSeasons,
+      required this.harvestSeasons,
+      required this.pruneSeasons,
+      required this.plantingSeasons,
+      required this.plantingMethods,
+      required this.soilHumidities,
+      required this.soilPhs,
+      required this.soilTypes,
+      this.lowHeight,
+      this.highHeight,
+      this.lowWidth,
+      this.highWidth,
+      this.contentUrl});
 
   static getPropertyList(Map<String, dynamic> json, String key) {
     List<String> propertyList = [];
@@ -129,10 +123,7 @@ class Plant {
       highHeight: json['high_height'],
       lowWidth: json['low_width'],
       highWidth: json['high_width'],
-      description: json['description'],
-      plantAdvice: json['plantAdvice'],
-      maintenanceAdvice: json['maintenanceAdvice'],
-      info: json['info'],
+      contentUrl: json['content_url'],
     );
   }
 
@@ -165,10 +156,7 @@ class Plant {
         "high_height": highHeight,
         "low_width": lowWidth,
         "high_width": highWidth,
-        "description": description,
-        "plantAdvice": plantAdvice,
-        "maintenanceAdvice": maintenanceAdvice,
-        "info": info,
+        "content_url": contentUrl,
       };
 
   @override

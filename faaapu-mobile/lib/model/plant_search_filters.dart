@@ -19,6 +19,32 @@ class PlantSearchFilters {
 });
 
   PlantSearchFilters.fromForm(this.selectedLight, this.selectedWater, this.selectedUsages, this.usageFilterCondition, this.nameFilter);
+
+  Map<String, dynamic> toJson() {
+    return {
+      'selectedLight': selectedLight?.toJson(), // Assuming LightProperty has a toJson method
+      'selectedWater': selectedWater?.toJson(), // Assuming WaterProperty has a toJson method
+      'selectedUsages': selectedUsages.map((usage) => usage.toJson()).toList(), // Assuming UsageProperty has a toJson method
+      'usageFilterCondition': usageFilterCondition,
+      'nameFilter': nameFilter,
+    };
+  }
+
+  factory PlantSearchFilters.fromJson(Map<String, dynamic> json) {
+    return PlantSearchFilters(
+      selectedLight: json['selectedLight'] != null
+          ? LightProperty.fromJson(json['selectedLight'] as Map<String, dynamic>)
+          : null,
+      selectedWater: json['selectedWater'] != null
+          ? WaterProperty.fromJson(json['selectedWater'] as Map<String, dynamic>)
+          : null,
+      selectedUsages: (json['selectedUsages'] as List<dynamic>)
+          .map((item) => UsageProperty.fromJson(item as Map<String, dynamic>))
+          .toList(),
+      usageFilterCondition: json['usageFilterCondition'] as String?,
+      nameFilter: json['nameFilter'] as String?,
+    );
+  }
 }
 
 extension PlantSearchFiltersX on PlantSearchFilters {
@@ -37,7 +63,7 @@ extension PlantSearchFiltersX on PlantSearchFilters {
             .any((usage) => plant.usages.contains(usage))
             : selectedUsageNames
             .every((usage) => plant.usages.contains(usage)));
-    bool nameCondition = nameFilter == '' ||
+    bool nameCondition = nameFilter == null || nameFilter == '' ||
         plant.name.contains(nameFilter!) ||
         plant.scientificName.contains(nameFilter!);
     return lightCondition &&
