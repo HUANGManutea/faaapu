@@ -3,7 +3,7 @@ import 'package:faaapu/data/plant_repository.dart';
 import 'package:faaapu/state/plant_search/plant_search_event.dart';
 import 'package:faaapu/state/plant_search/plant_search_state.dart';
 
-import '../state-status.dart';
+import '../state_status.dart';
 
 class PlantSearchBloc extends Bloc<PlantSearchEvent, PlantSearchState> {
   final PlantRepository _plantSearchRepository;

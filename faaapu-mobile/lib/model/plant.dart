@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'season.dart';
-import 'dart:developer';
 
 class Plant {
   int id;

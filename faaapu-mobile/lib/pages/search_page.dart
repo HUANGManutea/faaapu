@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:faaapu/components/modal/add_plant_modal.dart';
 import 'package:faaapu/components/search/custom_search_bar.dart';
@@ -7,13 +5,12 @@ import 'package:faaapu/components/search/search_plant_card.dart';
 import 'package:faaapu/model/plant_search.dart';
 import 'package:faaapu/model/zone.dart';
 import 'package:faaapu/router/app_router.gr.dart';
-import 'package:faaapu/supabase/db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../state/plant_search/plant_search_bloc.dart';
 import '../state/plant_search/plant_search_state.dart';
-import '../state/state-status.dart';
+import '../state/state_status.dart';
 import '../state/zone/zone_bloc.dart';
 import '../state/zone/zone_event.dart';
 import '../state/zone/zone_state.dart';

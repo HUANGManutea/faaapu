@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../model/zone.dart';
-
 class DeleteZoneModal extends StatefulWidget {
   final String zoneName;
   final Function(bool) onDeleteZone;

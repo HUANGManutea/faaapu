@@ -5,7 +5,7 @@ import 'package:faaapu/model/plant_search.dart';
 
 import '../../model/plant.dart';
 import '../../model/plant_search_filters.dart';
-import '../state-status.dart';
+import '../state_status.dart';
 
 class PlantSearchState extends Equatable {
   final List<PlantSearch> plantSearches;

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:faaapu/components/search/filter_section.dart';
 import 'package:faaapu/components/search/multi_filter_section.dart';
 import 'package:faaapu/model/plant-properties/light_property.dart';
@@ -14,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../state/plant_search/plant_search_event.dart';
 import '../../state/plant_search/plant_search_state.dart';
-import '../../state/state-status.dart';
+import '../../state/state_status.dart';
 
 class CustomSearchBar extends StatefulWidget {
   const CustomSearchBar({super.key});

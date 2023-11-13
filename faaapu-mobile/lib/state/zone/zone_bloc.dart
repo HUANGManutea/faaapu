@@ -3,7 +3,7 @@ import 'package:faaapu/data/zone_repository.dart';
 import 'package:faaapu/state/zone/zone_event.dart';
 import 'package:faaapu/state/zone/zone_state.dart';
 
-import '../state-status.dart';
+import '../state_status.dart';
 
 class ZoneBloc extends Bloc<ZoneEvent, ZoneState> {
   final ZoneRepository _zoneRepository;

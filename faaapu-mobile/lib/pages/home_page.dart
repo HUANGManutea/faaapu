@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:faaapu/components/faaapu/create_zone_modal.dart';
 import 'package:faaapu/components/faaapu/delete_zone_modal.dart';
@@ -7,7 +5,7 @@ import 'package:faaapu/components/faaapu/zone_container.dart';
 import 'package:faaapu/model/plant_search.dart';
 import 'package:faaapu/model/zone.dart';
 import 'package:faaapu/router/app_router.gr.dart';
-import 'package:faaapu/state/state-status.dart';
+import 'package:faaapu/state/state_status.dart';
 import 'package:faaapu/state/zone/zone_event.dart';
 import 'package:faaapu/state/zone/zone_state.dart';
 import 'package:flutter/material.dart';

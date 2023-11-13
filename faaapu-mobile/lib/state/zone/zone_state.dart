@@ -3,7 +3,7 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
-import 'package:faaapu/state/state-status.dart';
+import 'package:faaapu/state/state_status.dart';
 
 import '../../model/zone.dart';
 
