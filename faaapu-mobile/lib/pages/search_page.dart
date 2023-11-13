@@ -7,13 +7,16 @@ import 'package:faaapu/components/search/search_plant_card.dart';
 import 'package:faaapu/model/plant_search.dart';
 import 'package:faaapu/model/zone.dart';
 import 'package:faaapu/router/app_router.gr.dart';
-import 'package:faaapu/state/zone_cubit.dart';
 import 'package:faaapu/supabase/db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../state/plant_search/plant_search_bloc.dart';
 import '../state/plant_search/plant_search_state.dart';
+import '../state/state-status.dart';
+import '../state/zone/zone_bloc.dart';
+import '../state/zone/zone_event.dart';
+import '../state/zone/zone_state.dart';
 
 @RoutePage()
 class SearchPage extends StatefulWidget {
@@ -36,25 +39,18 @@ class SearchPageState extends State<SearchPage> {
   void showAddPlantModal(PlantSearch plant) {
     showModalBottomSheet(
         context: context,
-        builder: (context) => BlocBuilder<ZoneCubit, List<Zone>>(
-            builder: (context, zones) => DraggableScrollableSheet(
+        builder: (context) => BlocBuilder<ZoneBloc, ZoneState>(
+            builder: (context, state) => DraggableScrollableSheet(
                 initialChildSize: 1,
                 minChildSize: 1,
                 builder:
                     (BuildContext context, ScrollController scrollController) =>
                         AddPlantModal(
-                            zones: zones,
+                            zones: state.zones,
                             onZoneSelected: (Zone zone) {
-                              onAddPlantToZone(zone, plant);
-                              context.read<ZoneCubit>().fetchZonesWithPlants();
+                              BlocProvider.of<ZoneBloc>(context).add(AddPlantToZone(zone.id, plant.id));
                               Navigator.of(context).pop();
                             }))));
-  }
-
-  void onAddPlantToZone(Zone zone, PlantSearch plant) async {
-    await supabase
-        .from('zone_plant')
-        .insert({"zone_id": zone.id, "plant_id": plant.id});
   }
 
   @override
@@ -70,7 +66,7 @@ class SearchPageState extends State<SearchPage> {
                 BlocBuilder<PlantSearchBloc, PlantSearchState>(
                     builder: (context, state) =>
                         Column(children: [
-                          if (state.status == PlantSearchStatus.success) ...[
+                          if (state.status == StateStatus.success) ...[
                             for (var plant in state.filteredPlantSearches)
                               SearchPlantCard(
                                   plant: plant,

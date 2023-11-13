@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:faaapu/data/base_repository.dart';
 import 'package:faaapu/model/zone.dart';
@@ -18,7 +19,7 @@ class ZoneRepository extends BaseRepository {
 
     // always fetch the data if we can
     if (isConnected) {
-      return await _fetchZonesFromSupabase();
+      return await _fetchZones();
     }
 
     // no network
@@ -31,13 +32,42 @@ class ZoneRepository extends BaseRepository {
     return [];
   }
 
+  Future<Zone?> insertZone(String name) async {
+    var user = supabase.auth.currentUser;
+    if (user == null) {
+      log('cannot create zone, user is null');
+      return null;
+    } else {
+      var result = await supabase.from('zone').insert({'name': name, 'profile_id': user.id}).select().single();
+      return Zone.fromJson(result);
+    }
+  }
+
+  Future<void> deleteZone(int id) async {
+    await supabase.from('zone').delete().eq('id', id);
+  }
+
+  Future<void> deletePlantFromZone(int zoneId, int plantId) async {
+    await supabase
+        .from('zone_plant')
+        .delete()
+        .eq("zone_id", zoneId)
+        .eq("plant_id", plantId);
+  }
+
+  Future<void> addPlantToZone(int zoneId, int plantId) async {
+    await supabase
+        .from('zone_plant')
+        .insert({"zone_id": zoneId, "plant_id": plantId});
+  }
+
   Future<void> _cacheZones(List<Zone> zones) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final jsonEncodedData = jsonEncode(zones.map((zone) => zone.toJson()).toList());
     await sharedPreferences.setString(key, jsonEncodedData);
   }
 
-  Future<List<Zone>> _fetchZonesFromSupabase() async {
+  Future<List<Zone>> _fetchZones() async {
     var zones = await supabase.from('zone').select<List<Map<String, dynamic>>>(
         '''id, name, plants:plant!zone_plant(
         id,

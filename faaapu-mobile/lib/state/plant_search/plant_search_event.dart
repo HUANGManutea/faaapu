@@ -1,8 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:faaapu/model/plant_search_filters.dart';
 
-import '../../model/plant.dart';
-
 sealed class PlantSearchEvent extends Equatable {
   const PlantSearchEvent();
   @override

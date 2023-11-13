@@ -2,13 +2,15 @@ import 'dart:io';
 
 import 'package:faaapu/config/faaapu_config.dart';
 import 'package:faaapu/data/plant_repository.dart';
+import 'package:faaapu/data/zone_repository.dart';
 import 'package:faaapu/router/app_router.dart';
 import 'package:faaapu/state/light_cubit.dart';
 import 'package:faaapu/state/plant_search/plant_search_bloc.dart';
 import 'package:faaapu/state/plant_search/plant_search_event.dart';
 import 'package:faaapu/state/usage_cubit.dart';
 import 'package:faaapu/state/water_cubit.dart';
-import 'package:faaapu/state/zone_cubit.dart';
+import 'package:faaapu/state/zone/zone_bloc.dart';
+import 'package:faaapu/state/zone/zone_event.dart';
 import 'package:faaapu/supabase/db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,36 +43,41 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppRouter appRouter = AppRouter();
-    return BlocProvider<PlantSearchBloc>(create: (context) {
-      return PlantSearchBloc(plantSearchRepository: PlantRepository())..add(PlantSearchLoaded());
-    }, child: MultiBlocProvider(
-        providers: [
-          BlocProvider<ZoneCubit>(
-              create: (context) => ZoneCubit()..fetchZonesWithPlants()),
-          BlocProvider<LightCubit>(
-              create: (context) => LightCubit()..fetchLights()),
-          BlocProvider<WaterCubit>(
-              create: (context) => WaterCubit()..fetchWaters()),
-          BlocProvider<UsageCubit>(
-              create: (context) => UsageCubit()..fetchUsages()),
-        ],
-        child: MaterialApp.router(
-          title: "Fa'a'apu",
-          theme: ThemeData.light().copyWith(
-            primaryColor: Colors.green,
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.green,
+    return BlocProvider<PlantSearchBloc>(
+        create: (context) {
+          return PlantSearchBloc(plantSearchRepository: PlantRepository())
+            ..add(PlantSearchLoaded());
+        },
+        child: MultiBlocProvider(
+            providers: [
+              BlocProvider<ZoneBloc>(create: (context) {
+                return ZoneBloc(zoneRepository: ZoneRepository())
+                  ..add(ZonesLoaded());
+              }),
+              BlocProvider<LightCubit>(
+                  create: (context) => LightCubit()..fetchLights()),
+              BlocProvider<WaterCubit>(
+                  create: (context) => WaterCubit()..fetchWaters()),
+              BlocProvider<UsageCubit>(
+                  create: (context) => UsageCubit()..fetchUsages()),
+            ],
+            child: MaterialApp.router(
+              title: "Fa'a'apu",
+              theme: ThemeData.light().copyWith(
+                primaryColor: Colors.green,
+                textButtonTheme: TextButtonThemeData(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.green,
+                  ),
+                ),
+                elevatedButtonTheme: ElevatedButtonThemeData(
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.green,
+                  ),
+                ),
               ),
-            ),
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.green,
-              ),
-            ),
-          ),
-          routerConfig: appRouter.config(),
-        )));
+              routerConfig: appRouter.config(),
+            )));
   }
 }

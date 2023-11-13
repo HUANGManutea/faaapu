@@ -5,19 +5,18 @@ import 'package:faaapu/model/plant_search.dart';
 
 import '../../model/plant.dart';
 import '../../model/plant_search_filters.dart';
-
-enum PlantSearchStatus { initial, loading, success, failure }
+import '../state-status.dart';
 
 class PlantSearchState extends Equatable {
   final List<PlantSearch> plantSearches;
   final PlantSearchFilters filters;
-  final PlantSearchStatus status;
+  final StateStatus status;
   final Plant? plant;
 
   const PlantSearchState(
       {this.plantSearches = const [],
       this.filters = const PlantSearchFilters(),
-      this.status = PlantSearchStatus.initial,
+      this.status = StateStatus.initial,
       this.plant});
 
   Iterable<PlantSearch> get filteredPlantSearches =>
@@ -26,7 +25,7 @@ class PlantSearchState extends Equatable {
   PlantSearchState copyWith(
       {List<PlantSearch> Function()? plantSearches,
       PlantSearchFilters Function()? filters,
-      PlantSearchStatus Function()? status,
+      StateStatus Function()? status,
       Plant? Function()? plant}) {
     return PlantSearchState(
         plantSearches:
@@ -40,8 +39,8 @@ class PlantSearchState extends Equatable {
     return {
       'plantSearches': plantSearches.map((plantSearch) => plantSearch.toJson()).toList(),
       'filters': filters.toJson(),
-      'status': status.toString(), // Convert enum to string
-      'plant': plant?.toJson(), // Assuming Plant has a toJson method
+      'status': status.toJsonString(), // Convert enum to string
+      'plant': plant?.toJson(),
     };
   }
 
@@ -51,25 +50,11 @@ class PlantSearchState extends Equatable {
           .map((item) => PlantSearch.fromJson(item as Map<String, dynamic>))
           .toList(),
       filters: PlantSearchFilters.fromJson(json['filters'] as Map<String, dynamic>),
-      status: _parseStatus(json['status']),
+      status: StateStatusX.fromJsonString(json['status']),
       plant: Plant.fromJson(json['plant'] as Map<String, dynamic>),
     );
   }
 
-  static PlantSearchStatus _parseStatus(String status) {
-    switch (status) {
-      case 'PlantSearchStatus.initial':
-        return PlantSearchStatus.initial;
-      case 'PlantSearchStatus.loading':
-        return PlantSearchStatus.loading;
-      case 'PlantSearchStatus.success':
-        return PlantSearchStatus.success;
-      case 'PlantSearchStatus.failure':
-        return PlantSearchStatus.failure;
-      default:
-        return PlantSearchStatus.initial; // Default value if status is unknown
-    }
-  }
 
   @override
   List<Object?> get props => [plantSearches, filters, status, plant];

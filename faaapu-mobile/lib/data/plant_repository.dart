@@ -44,7 +44,7 @@ class PlantRepository extends BaseRepository {
 
     // always fetch the data if we can
     if (isConnected) {
-      List<PlantSearch> plantSearches = await _fetchPlantSearchesFromSupabase();
+      List<PlantSearch> plantSearches = await _fetchPlantSearches();
       // cache it
       await _cacheRepository(CachedPlantRepository(plantSearches: plantSearches, plants: cachedPlantRepository.plants));
       return plantSearches;
@@ -61,7 +61,7 @@ class PlantRepository extends BaseRepository {
 
     // always fetch the data if we can
     if (isConnected) {
-      Plant plant = await _fetchPlantFromSupabase(id);
+      Plant plant = await _fetchPlant(id);
       Map<int, Plant> newPlants = {...cachedPlantRepository.plants, plant.id: plant};
       // cache it
       await _cacheRepository(CachedPlantRepository(plantSearches: cachedPlantRepository.plantSearches, plants: newPlants));
@@ -77,7 +77,7 @@ class PlantRepository extends BaseRepository {
     }
   }
 
-  Future<Plant> _fetchPlantFromSupabase(int id) async {
+  Future<Plant> _fetchPlant(int id) async {
     var plant = await supabase
         .from('plant')
         .select<Map<String, dynamic>>('''
@@ -127,7 +127,7 @@ class PlantRepository extends BaseRepository {
     return plant;
   }
 
-  Future<List<PlantSearch>> _fetchPlantSearchesFromSupabase() async {
+  Future<List<PlantSearch>> _fetchPlantSearches() async {
     var plants =
     await supabase.from('plant').select<List<Map<String, dynamic>>>('''
         id,

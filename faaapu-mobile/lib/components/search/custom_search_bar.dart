@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../state/plant_search/plant_search_event.dart';
 import '../../state/plant_search/plant_search_state.dart';
+import '../../state/state-status.dart';
 
 class CustomSearchBar extends StatefulWidget {
   const CustomSearchBar({super.key});
@@ -56,7 +57,7 @@ class CustomSearchBarState extends State<CustomSearchBar> {
                                 padding: const EdgeInsets.all(5),
                                 child: Column(
                                   children: [
-                                    if (state.status == PlantSearchStatus.loading) ...[
+                                    if (state.status == StateStatus.loading) ...[
                                       const Text('Chargement'),
                                     ] else ...[
                                       Row(

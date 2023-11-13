@@ -21,7 +21,7 @@ class WaterRepository extends BaseRepository {
 
     // always fetch the data if we can
     if (isConnected) {
-      return await _fetchWatersFromSupabase();
+      return await _fetchWaters();
     }
 
     // no network
@@ -40,7 +40,7 @@ class WaterRepository extends BaseRepository {
     await sharedPreferences.setString(key, jsonEncodedData);
   }
 
-  Future<List<WaterProperty>> _fetchWatersFromSupabase() async {
+  Future<List<WaterProperty>> _fetchWaters() async {
     final waterFilters = await supabase
         .from('water')
         .select<List<Map<String, dynamic>>>('id, name, description')

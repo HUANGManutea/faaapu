@@ -57,6 +57,9 @@ class SearchPlantCard extends StatelessWidget {
                                       onPressed: () {
                                         onDetailsTap(plant);
                                       },
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.blueAccent
+                                      ),
                                       child: const Text("Voir la fiche")),
                                   if (onAddToGardenTap != null)
                                     Row(children: [
@@ -66,9 +69,6 @@ class SearchPlantCard extends StatelessWidget {
                                             onAddToGardenTap!(plant);
                                           },
                                           child: const Text("Ajouter"),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.blueAccent
-                                        ),
                                       ),
                                     ],),
                                   if (onRemoveFromGardenTap != null)

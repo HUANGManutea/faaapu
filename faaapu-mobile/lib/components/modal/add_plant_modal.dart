@@ -6,9 +6,7 @@ class AddPlantModal extends StatelessWidget {
   final Function(Zone) onZoneSelected;
 
   const AddPlantModal(
-      {super.key,
-      required this.zones,
-      required this.onZoneSelected});
+      {super.key, required this.zones, required this.onZoneSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -18,24 +16,29 @@ class AddPlantModal extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text("Ajouter à une zone",
-                    style: TextStyle(
-                        fontSize: 24, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 10),
-                Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      for (var zone in zones)
-                        ElevatedButton(
-                          onPressed: () {
-                            onZoneSelected(zone);
-                          },
-                          child: Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Text(zone.name,
-                                  style: const TextStyle(fontSize: 20))),
-                        )
-                    ])
+                if (zones.isEmpty) ...[
+                  const Text(
+                      "Pas de zones à afficher, veuillez en créer dans 'Mes fa'a'apu'")
+                ] else ...[
+                  const Text("Ajouter à une zone",
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        for (var zone in zones)
+                          ElevatedButton(
+                            onPressed: () {
+                              onZoneSelected(zone);
+                            },
+                            child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Text(zone.name,
+                                    style: const TextStyle(fontSize: 20))),
+                          )
+                      ])
+                ]
               ],
             )));
   }

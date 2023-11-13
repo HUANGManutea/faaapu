@@ -22,7 +22,7 @@ class UsageRepository extends BaseRepository {
 
     // always fetch the data if we can
     if (isConnected) {
-      return await _fetchUsagesFromSupabase();
+      return await _fetchUsages();
     }
 
     // no network
@@ -41,7 +41,7 @@ class UsageRepository extends BaseRepository {
     await sharedPreferences.setString(key, jsonEncodedData);
   }
 
-  Future<List<UsageProperty>> _fetchUsagesFromSupabase() async {
+  Future<List<UsageProperty>> _fetchUsages() async {
     final usageFilters = await supabase
         .from('usage')
         .select<List<Map<String, dynamic>>>('id, name, description')

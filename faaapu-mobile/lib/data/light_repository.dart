@@ -20,7 +20,7 @@ class LightRepository extends BaseRepository {
 
     // always fetch the data if we can
     if (isConnected) {
-      return await _fetchLightsFromSupabase();
+      return await _fetchLights();
     }
 
     // no network
@@ -39,7 +39,7 @@ class LightRepository extends BaseRepository {
     await sharedPreferences.setString(key, jsonEncodedData);
   }
 
-  Future<List<LightProperty>> _fetchLightsFromSupabase() async {
+  Future<List<LightProperty>> _fetchLights() async {
     final lightFilters = await supabase
         .from('light')
         .select<List<Map<String, dynamic>>>('id, name, description')
