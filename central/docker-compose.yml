@@ -1,0 +1,30 @@
+version: '3'
+
+networks:
+  faaapu:
+    driver: bridge
+
+services:
+  faaapu-tdb:
+    image: timescale/timescaledb:latest-pg14
+    environment:
+      POSTGRES_DB: ${TDB_DBNAME}
+      POSTGRES_USER: ${TDB_USER}
+      POSTGRES_PASSWORD: ${TDB_PASSWORD}
+    volumes:
+      - ./central-db/data:/var/lib/postgresql/data
+      - ./central-db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - '5432:5432'
+    networks:
+      - faaapu
+  faaapu-mqtt-server:
+    image: eclipse-mosquitto:2.0
+    volumes:
+      - ./central-mqtt-server/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./central-mqtt-server/password.txt:/mosquitto/config/password.txt
+    ports:
+      - '1883:1883'
+      - '9001:9001'
+    networks:
+      - faaapu
