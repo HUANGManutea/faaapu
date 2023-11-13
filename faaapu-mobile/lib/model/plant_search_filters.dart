@@ -58,7 +58,7 @@ extension PlantSearchFiltersX on PlantSearchFilters {
     bool waterCondition = selectedWater == null ||
         plant.water == selectedWater!.name;
     bool usageCondition = selectedUsages.isEmpty || selectedUsageNames == null ||
-        ((usageFilterCondition == null || usageFilterCondition == "OR")
+        ((usageFilterCondition == null || usageFilterCondition == "OU")
             ? selectedUsageNames
             .any((usage) => plant.usages.contains(usage))
             : selectedUsageNames
