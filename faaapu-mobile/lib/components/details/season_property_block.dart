@@ -37,10 +37,21 @@ class SeasonPropertyBlock extends StatelessWidget {
   }
 
   List<Container> getMonthsWidgets() {
+    // Get the current date and time
+    DateTime now = DateTime.now();
+
+    // Extract the current month (from 1 to 12)
+    int currentMonth = now.month;
+
     return months.entries.map((entry) {
       return Container(
           padding: const EdgeInsets.all(5),
-          decoration: BoxDecoration(border: Border.all(color: Colors.black), color: _isMonthInsideAnySeason(entry.key) ? Colors.green : Colors.grey,),
+          decoration: BoxDecoration(
+            border: Border.all(
+                color: currentMonth == entry.key ? Colors.red : Colors.black),
+            color:
+                _isMonthInsideAnySeason(entry.key) ? Colors.green : Colors.grey,
+          ),
           alignment: Alignment.center,
           child: Text(entry.value));
     }).toList();
@@ -59,7 +70,7 @@ class SeasonPropertyBlock extends StatelessWidget {
           width: 180,
           child: GridView(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4),
+                  crossAxisCount: 4, crossAxisSpacing: 2, mainAxisSpacing: 2),
               children: getMonthsWidgets())),
     ]);
   }

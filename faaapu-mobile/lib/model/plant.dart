@@ -68,6 +68,8 @@ class Plant {
       for (var jsonData in jsonDatas) {
         if (jsonData is String) {
           propertyList.add(jsonData);
+        } else if (jsonData['name'] != null) {
+          propertyList.add(jsonData['name']);
         }
       }
     }
@@ -90,8 +92,8 @@ class Plant {
     List<Season> harvestSeasons = getSeasonList(json, 'harvestSeasons');
     List<Season> pruneSeasons = getSeasonList(json, 'pruneSeasons');
     List<Season> plantingSeasons = getSeasonList(json, 'plantingSeasons');
-    List<String> usages = getPropertyList(json, 'usages');
-    List<String> lights = getPropertyList(json, 'lights');
+    List<String> usages = getPropertyList(json, 'usage');
+    List<String> lights = getPropertyList(json, 'light');
     List<String> plantingMethods = getPropertyList(json, 'plantingMethods');
     List<String> soilHumidities = getPropertyList(json, 'soilHumidities');
     List<String> soilPhs = getPropertyList(json, 'soilPhs');
@@ -144,8 +146,8 @@ class Plant {
         "lifespan": {"name": lifespan},
         "difficulty": {"name": difficulty},
         "type": {"name": type},
-        "usages": usages,
-        "lights": lights,
+        "usage": usages,
+        "light": lights,
         "bloomSeasons": seasonsToJson(bloomSeasons),
         "harvestSeasons": seasonsToJson(harvestSeasons),
         "pruneSeasons": seasonsToJson(pruneSeasons),

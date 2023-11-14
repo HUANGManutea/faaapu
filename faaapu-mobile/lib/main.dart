@@ -16,8 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer';
 
-import 'package:flutter_native_splash/flutter_native_splash.dart';
-
 Future<void> main() async {
   const supabaseUrl =
       String.fromEnvironment('supabaseUrl', defaultValue: 'error');

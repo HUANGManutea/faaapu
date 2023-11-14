@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:faaapu/data/base_repository.dart';
 import 'package:faaapu/model/cache/cached-plant-repository.dart';
@@ -20,7 +21,6 @@ class PlantRepository extends BaseRepository {
     final sharedPreferences = await SharedPreferences.getInstance();
     final cachedData = sharedPreferences.getString(key);
     if (cachedData != null) {
-      log('cachedData, $cachedData');
       cachedPlantRepository =
           CachedPlantRepository.fromJson(jsonDecode(cachedData) as Map<String, dynamic>);
     } else {
@@ -61,11 +61,7 @@ class PlantRepository extends BaseRepository {
 
     // always fetch the data if we can
     if (isConnected) {
-      Plant plant = await _fetchPlant(id);
-      Map<int, Plant> newPlants = {...cachedPlantRepository.plants, plant.id: plant};
-      // cache it
-      await _cacheRepository(CachedPlantRepository(plantSearches: cachedPlantRepository.plantSearches, plants: newPlants));
-      return plant;
+      return await _fetchPlant(id);
     }
 
     // no network
@@ -120,7 +116,7 @@ class PlantRepository extends BaseRepository {
 
     if (plant.contentUrl != null) {
       final contentRawFile = await supabase.storage.from('plants').download('contents/${plant.contentUrl}');
-      final String markdownContent = String.fromCharCodes(contentRawFile);
+      final String markdownContent = utf8.decode(contentRawFile);
       plant.content = markdownContent;
     }
 
@@ -149,7 +145,6 @@ class PlantRepository extends BaseRepository {
         usage(name),
         light(name)
         ''').withConverter((plantSearchResults) => plantSearchResults.map((data) => PlantSearch.fromJson(data)).toList());
-
     // get the plant image
     for (var plant in plants) {
       final imageUrl =

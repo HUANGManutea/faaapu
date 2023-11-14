@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 class PlantSearch {
   int id;
@@ -45,7 +46,9 @@ class PlantSearch {
     if (json['usage'] != null) {
       var jsonUsages = List<Map<String, dynamic>>.from(json['usage']);
       for (var jsonUsage in jsonUsages) {
-        if (jsonUsage['name'] != null) {
+        if (jsonUsage is String) {
+          usages.add(jsonUsage as String);
+        } else if (jsonUsage['name'] != null) {
           usages.add(jsonUsage['name']);
         }
       }
@@ -54,12 +57,14 @@ class PlantSearch {
     if (json['light'] != null) {
       var jsonLights = List<Map<String, dynamic>>.from(json['light']);
       for (var jsonLight in jsonLights) {
-        if (jsonLight['name'] != null) {
+        if (jsonLight is String) {
+          lights.add(jsonLight as String);
+        } else if (jsonLight['name'] != null) {
           lights.add(jsonLight['name']);
         }
       }
     }
-    return PlantSearch(
+    var result = PlantSearch(
       id: json['id'],
       name: json['name'],
       scientificName: json['scientific_name'],
@@ -79,6 +84,7 @@ class PlantSearch {
       lowWidth: json['low_width'],
       highWidth: json['high_width'],
     );
+    return result;
   }
 
   Map<String, dynamic> toJson() => {
@@ -94,8 +100,8 @@ class PlantSearch {
         "lifespan": {"name": lifespan},
         "difficulty": {"name": difficulty},
         "type": {"name": type},
-        "usages": usages,
-        "lights": lights,
+        "usage": usages,
+        "light": lights,
         "low_height": lowHeight,
         "high_height": highHeight,
         "low_width": lowWidth,
