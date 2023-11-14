@@ -1,10 +1,12 @@
+import 'package:faaapu/model/cache/base_cache_data.dart';
+
 import '../plant.dart';
 
-class CachedPlantRepository {
+class CachedPlantRepository extends BaseCacheData{
   final List<Plant> plants;
 
   const CachedPlantRepository(
-      {required this.plants});
+      {required this.plants, required super.expirationDate});
 
   factory CachedPlantRepository.fromJson(Map<String, dynamic> json) {
     final List<Plant> plants =
@@ -14,9 +16,11 @@ class CachedPlantRepository {
 
     return CachedPlantRepository(
       plants: plants,
+      expirationDate: json['expirationDate']
     );
   }
 
+  @override
   Map<String, dynamic> toJson() => {
         "plants": plants.map((ps) => ps.toJson()).toList(),
       };

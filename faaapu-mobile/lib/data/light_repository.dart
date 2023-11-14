@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LightRepository extends BaseRepository {
 
-  LightRepository() : super(key: 'light');
+  LightRepository({required super.nbDaysCache}) : super(key: 'light');
 
   Future<List<LightProperty>> getLights() async {
     final sharedPreferences = await SharedPreferences.getInstance();

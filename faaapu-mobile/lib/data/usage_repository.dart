@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class UsageRepository extends BaseRepository {
 
-  UsageRepository() : super(key: 'usage');
+  UsageRepository({required super.nbDaysCache}) : super(key: 'usage');
 
   Future<List<UsageProperty>> getUsages() async {
     final sharedPreferences = await SharedPreferences.getInstance();

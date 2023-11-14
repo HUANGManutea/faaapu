@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:faaapu/config/faaapu_config.dart';
+import 'package:faaapu/data/light_repository.dart';
 import 'package:faaapu/data/plant_repository.dart';
+import 'package:faaapu/data/usage_repository.dart';
+import 'package:faaapu/data/water_repository.dart';
 import 'package:faaapu/data/zone_repository.dart';
 import 'package:faaapu/router/app_router.dart';
 import 'package:faaapu/state/light_cubit.dart';
@@ -21,6 +24,7 @@ Future<void> main() async {
       String.fromEnvironment('supabaseUrl', defaultValue: 'error');
   const supabaseAnonKey =
       String.fromEnvironment('supabaseAnonKey', defaultValue: 'error');
+  var nbDaysCache = int.parse(const String.fromEnvironment('nbDaysCache', defaultValue: '0'));
   if (supabaseUrl == "error" || supabaseAnonKey == "error") {
     log('supabaseUrl or supabaseAnonKey not defined');
     exit(0);
@@ -29,13 +33,15 @@ Future<void> main() async {
   }
 
   FaaapuConfig config =
-      FaaapuConfig(supabaseAnonKey: supabaseAnonKey, supabaseUrl: supabaseUrl);
+      FaaapuConfig(supabaseAnonKey: supabaseAnonKey, supabaseUrl: supabaseUrl,nbDaysCache: nbDaysCache);
   await initialize(config);
-  runApp(const MyApp());
+  runApp(MyApp(config: config));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final FaaapuConfig config;
+
+  const MyApp({super.key, required this.config});
 
   // This widget is the root of your application.
   @override
@@ -43,21 +49,21 @@ class MyApp extends StatelessWidget {
     AppRouter appRouter = AppRouter();
     return BlocProvider<PlantBloc>(
         create: (context) {
-          return PlantBloc(plantRepository: PlantRepository())
+          return PlantBloc(plantRepository: PlantRepository(nbDaysCache: config.nbDaysCache))
             ..add(PlantsLoaded());
         },
         child: MultiBlocProvider(
             providers: [
               BlocProvider<ZoneBloc>(create: (context) {
-                return ZoneBloc(zoneRepository: ZoneRepository())
+                return ZoneBloc(zoneRepository: ZoneRepository(nbDaysCache: config.nbDaysCache))
                   ..add(ZonesLoaded());
               }),
               BlocProvider<LightCubit>(
-                  create: (context) => LightCubit()..fetchLights()),
+                  create: (context) => LightCubit(lightRepository: LightRepository(nbDaysCache: config.nbDaysCache))..fetchLights()),
               BlocProvider<WaterCubit>(
-                  create: (context) => WaterCubit()..fetchWaters()),
+                  create: (context) => WaterCubit(waterRepository: WaterRepository(nbDaysCache: config.nbDaysCache))..fetchWaters()),
               BlocProvider<UsageCubit>(
-                  create: (context) => UsageCubit()..fetchUsages()),
+                  create: (context) => UsageCubit(usageRepository: UsageRepository(nbDaysCache: config.nbDaysCache))..fetchUsages()),
             ],
             child: MaterialApp.router(
               title: "Fa'a'apu",

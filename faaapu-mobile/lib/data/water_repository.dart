@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class WaterRepository extends BaseRepository {
 
-  WaterRepository() : super(key: 'water');
+  WaterRepository({required super.nbDaysCache}) : super(key: 'water');
 
   Future<List<WaterProperty>> getWaters() async {
     final sharedPreferences = await SharedPreferences.getInstance();

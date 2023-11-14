@@ -2,8 +2,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 abstract class BaseRepository {
   final String key;
+  int nbDaysCache;
 
-  BaseRepository({required this.key});
+  BaseRepository({required this.key, required this.nbDaysCache});
 
   Future<bool> isConnected() async {
     // Check for internet connection
@@ -13,4 +14,6 @@ abstract class BaseRepository {
         (connectivityResult == ConnectivityResult.vpn) ||
         (connectivityResult == ConnectivityResult.wifi));
   }
+
+
 }

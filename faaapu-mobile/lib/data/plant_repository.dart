@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:faaapu/data/base_repository.dart';
-import 'package:faaapu/model/cache/cached-plant-repository.dart';
+import 'package:faaapu/model/cache/cached_plant_repository.dart';
 import 'package:faaapu/supabase/db.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,7 +9,7 @@ import '../model/plant.dart';
 class PlantRepository extends BaseRepository {
   late CachedPlantRepository cachedPlantRepository;
 
-  PlantRepository() : super(key: 'plant') {
+  PlantRepository({required super.nbDaysCache}) : super(key: 'plant') {
     _getCachedData();
   }
 
@@ -21,8 +21,9 @@ class PlantRepository extends BaseRepository {
           jsonDecode(cachedData) as Map<String, dynamic>);
     } else {
       // Handle the case when there is no cached data.
-      cachedPlantRepository = const CachedPlantRepository(
+      cachedPlantRepository = CachedPlantRepository(
         plants: [],
+        expirationDate:  DateTime.now()
       );
     }
   }
@@ -42,7 +43,8 @@ class PlantRepository extends BaseRepository {
     if (isConnected) {
       List<Plant> plants = await _fetchPlants();
       // cache it
-      await _cacheRepository(CachedPlantRepository(plants: plants));
+      await _cacheRepository(CachedPlantRepository(plants: plants,
+          expirationDate:  DateTime.now().add(Duration(days: nbDaysCache))));
       return plants;
     }
 

@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ZoneRepository extends BaseRepository {
 
-  ZoneRepository() : super(key: 'zone');
+  ZoneRepository({required super.nbDaysCache}) : super(key: 'zone');
 
   Future<List<Zone>> getZones() async {
     final sharedPreferences = await SharedPreferences.getInstance();
