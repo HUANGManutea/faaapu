@@ -9,9 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
-import '../state/plant_search/plant_search_bloc.dart';
-import '../state/plant_search/plant_search_event.dart';
-import '../state/plant_search/plant_search_state.dart';
+import '../state/plant_search/plant_bloc.dart';
+import '../state/plant_search/plant_event.dart';
+import '../state/plant_search/plant_state.dart';
 
 @RoutePage()
 class PlantDetailsPage extends StatefulWidget {
@@ -27,14 +27,14 @@ class PlantDetailsPageState extends State<PlantDetailsPage> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<PlantSearchBloc>(context).add(PlantChanged(widget.id));
+    BlocProvider.of<PlantBloc>(context).add(PlantChanged(widget.id));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text("Détails de la plante")),
-        body: BlocBuilder<PlantSearchBloc, PlantSearchState>(
+        body: BlocBuilder<PlantBloc, PlantState>(
               builder: (context, state) =>
                   ListView(padding: const EdgeInsets.all(10), children: [
                 if (state.plant != null) ...[

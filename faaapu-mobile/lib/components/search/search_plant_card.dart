@@ -1,12 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:faaapu/model/plant_search.dart';
 import 'package:flutter/material.dart';
 
+import '../../model/plant.dart';
+
 class SearchPlantCard extends StatelessWidget {
-  final PlantSearch plant;
-  final Function(PlantSearch) onDetailsTap;
-  final Function(PlantSearch)? onAddToGardenTap;
-  final Function(PlantSearch)? onRemoveFromGardenTap;
+  final Plant plant;
+  final Function(Plant) onDetailsTap;
+  final Function(Plant)? onAddToGardenTap;
+  final Function(Plant)? onRemoveFromGardenTap;
 
   const SearchPlantCard(
       {super.key,

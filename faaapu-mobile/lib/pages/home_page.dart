@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:faaapu/components/faaapu/create_zone_modal.dart';
 import 'package:faaapu/components/faaapu/delete_zone_modal.dart';
 import 'package:faaapu/components/faaapu/zone_container.dart';
-import 'package:faaapu/model/plant_search.dart';
 import 'package:faaapu/model/zone.dart';
 import 'package:faaapu/router/app_router.gr.dart';
 import 'package:faaapu/state/state_status.dart';
@@ -11,6 +10,7 @@ import 'package:faaapu/state/zone/zone_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../model/plant.dart';
 import '../state/zone/zone_bloc.dart';
 
 @RoutePage()
@@ -27,7 +27,7 @@ class HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  void onViewPlant(PlantSearch plant) {
+  void onViewPlant(Plant plant) {
     AutoRouter.of(context).navigate(PlantDetailsRoute(id: plant.id));
   }
 
@@ -78,7 +78,7 @@ class HomePageState extends State<HomePage> {
                             onDetailsTap: onViewPlant,
                             onDeleteZone: showDeleteZoneModal,
                             onRemoveFromGardenTap:
-                                (Zone zone, PlantSearch plant) {
+                                (Zone zone, Plant plant) {
                               BlocProvider.of<ZoneBloc>(context).add(RemovePlantFromZone(zone.id, plant.id));
                             }),
                       ElevatedButton(

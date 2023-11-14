@@ -1,16 +1,16 @@
 import 'package:faaapu/model/plant-properties/light_property.dart';
 import 'package:faaapu/model/plant-properties/usage_property.dart';
 import 'package:faaapu/model/plant-properties/water_property.dart';
-import 'package:faaapu/model/plant_search.dart';
+import 'package:faaapu/model/plant.dart';
 
-class PlantSearchFilters {
+class PlantFilters {
   final LightProperty? selectedLight;
   final WaterProperty? selectedWater;
   final List<UsageProperty> selectedUsages;
   final String? usageFilterCondition;
   final String? nameFilter;
 
-  const PlantSearchFilters({
+  const PlantFilters({
     this.selectedLight,
     this.selectedWater,
     this.selectedUsages = const [],
@@ -18,7 +18,7 @@ class PlantSearchFilters {
     this.nameFilter
 });
 
-  PlantSearchFilters.fromForm(this.selectedLight, this.selectedWater, this.selectedUsages, this.usageFilterCondition, this.nameFilter);
+  PlantFilters.fromForm(this.selectedLight, this.selectedWater, this.selectedUsages, this.usageFilterCondition, this.nameFilter);
 
   Map<String, dynamic> toJson() {
     return {
@@ -30,8 +30,8 @@ class PlantSearchFilters {
     };
   }
 
-  factory PlantSearchFilters.fromJson(Map<String, dynamic> json) {
-    return PlantSearchFilters(
+  factory PlantFilters.fromJson(Map<String, dynamic> json) {
+    return PlantFilters(
       selectedLight: json['selectedLight'] != null
           ? LightProperty.fromJson(json['selectedLight'] as Map<String, dynamic>)
           : null,
@@ -47,8 +47,8 @@ class PlantSearchFilters {
   }
 }
 
-extension PlantSearchFiltersX on PlantSearchFilters {
-  bool apply(PlantSearch plant) {
+extension PlantFiltersX on PlantFilters {
+  bool apply(Plant plant) {
     var selectedUsageNames = selectedUsages.isEmpty ? null :
     selectedUsages.map((selectedUsage) => selectedUsage.name);
 
@@ -72,7 +72,7 @@ extension PlantSearchFiltersX on PlantSearchFilters {
         nameCondition;
   }
 
-  Iterable<PlantSearch> applyAll(Iterable<PlantSearch> plantSearches) {
-    return plantSearches.where(apply);
+  Iterable<Plant> applyAll(Iterable<Plant> plants) {
+    return plants.where(apply);
   }
 }

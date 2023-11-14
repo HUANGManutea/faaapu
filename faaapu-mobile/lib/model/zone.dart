@@ -1,27 +1,27 @@
 import 'dart:convert';
 
-import 'package:faaapu/model/plant_search.dart';
+import 'package:faaapu/model/plant.dart';
 
 class Zone {
   int id;
   String name;
-  List<PlantSearch> plants;
+  List<Plant> plants;
 
   Zone({required this.id, required this.name, required this.plants});
 
-  static getPlantSearchList(Map<String, dynamic> json) {
-    List<PlantSearch> plants = [];
+  static getPlantList(Map<String, dynamic> json) {
+    List<Plant> plants = [];
     if (json['plants'] != null) {
       var jsonDatas = List<Map<String, dynamic>>.from(json['plants']);
       for(var jsonData in jsonDatas) {
-        plants.add(PlantSearch.fromJson(jsonData));
+        plants.add(Plant.fromJson(jsonData));
       }
     }
     return plants;
   }
 
   factory Zone.fromJson(Map<String, dynamic> json) {
-    List<PlantSearch> plants = getPlantSearchList(json);
+    List<Plant> plants = getPlantList(json);
     return Zone(id: json['id'], name: json['name'], plants: plants);
   }
 

@@ -5,13 +5,13 @@ import 'package:faaapu/model/plant-properties/usage_property.dart';
 import 'package:faaapu/model/plant-properties/water_property.dart';
 import 'package:faaapu/model/plant_search_filters.dart';
 import 'package:faaapu/state/light_cubit.dart';
-import 'package:faaapu/state/plant_search/plant_search_bloc.dart';
+import 'package:faaapu/state/plant_search/plant_bloc.dart';
 import 'package:faaapu/state/usage_cubit.dart';
 import 'package:faaapu/state/water_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../state/plant_search/plant_search_event.dart';
-import '../../state/plant_search/plant_search_state.dart';
+import '../../state/plant_search/plant_event.dart';
+import '../../state/plant_search/plant_state.dart';
 import '../../state/state_status.dart';
 
 class CustomSearchBar extends StatefulWidget {
@@ -36,14 +36,14 @@ class CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   void applyFilters() {
-    BlocProvider.of<PlantSearchBloc>(context).add(PlantSearchFilterChanged(
-        PlantSearchFilters.fromForm(selectedLight, selectedWater,
+    BlocProvider.of<PlantBloc>(context).add(PlantFilterChanged(
+        PlantFilters.fromForm(selectedLight, selectedWater,
             selectedUsages, usageFilterCondition, nameFilter)));
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PlantSearchBloc, PlantSearchState>(
+    return BlocBuilder<PlantBloc, PlantState>(
         builder: (context, state) => BlocBuilder<LightCubit,
                 List<LightProperty>>(
             builder: (context, lightFilters) => BlocBuilder<UsageCubit,

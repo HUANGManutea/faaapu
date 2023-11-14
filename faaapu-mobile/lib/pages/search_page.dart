@@ -2,14 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:faaapu/components/modal/add_plant_modal.dart';
 import 'package:faaapu/components/search/custom_search_bar.dart';
 import 'package:faaapu/components/search/search_plant_card.dart';
-import 'package:faaapu/model/plant_search.dart';
 import 'package:faaapu/model/zone.dart';
 import 'package:faaapu/router/app_router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../state/plant_search/plant_search_bloc.dart';
-import '../state/plant_search/plant_search_state.dart';
+import '../model/plant.dart';
+import '../state/plant_search/plant_bloc.dart';
+import '../state/plant_search/plant_state.dart';
 import '../state/state_status.dart';
 import '../state/zone/zone_bloc.dart';
 import '../state/zone/zone_event.dart';
@@ -29,11 +29,11 @@ class SearchPageState extends State<SearchPage> {
     super.initState();
   }
 
-  void onViewPlant(PlantSearch plant) {
+  void onViewPlant(Plant plant) {
     AutoRouter.of(context).navigate(PlantDetailsRoute(id: plant.id));
   }
 
-  void showAddPlantModal(PlantSearch plant) {
+  void showAddPlantModal(Plant plant) {
     showModalBottomSheet(
         context: context,
         builder: (context) => BlocBuilder<ZoneBloc, ZoneState>(
@@ -60,11 +60,11 @@ class SearchPageState extends State<SearchPage> {
             Column(
               children: [
                 const CustomSearchBar(),
-                BlocBuilder<PlantSearchBloc, PlantSearchState>(
+                BlocBuilder<PlantBloc, PlantState>(
                     builder: (context, state) =>
                         Column(children: [
                           if (state.status == StateStatus.success) ...[
-                            for (var plant in state.filteredPlantSearches)
+                            for (var plant in state.filteredPlants)
                               SearchPlantCard(
                                   plant: plant,
                                   onDetailsTap: onViewPlant,

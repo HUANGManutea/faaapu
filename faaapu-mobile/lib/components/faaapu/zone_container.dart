@@ -1,12 +1,13 @@
 import 'package:faaapu/components/search/search_plant_card.dart';
-import 'package:faaapu/model/plant_search.dart';
 import 'package:faaapu/model/zone.dart';
 import 'package:flutter/material.dart';
 
+import '../../model/plant.dart';
+
 class ZoneContainer extends StatelessWidget {
   final Zone zone;
-  final Function(PlantSearch) onDetailsTap;
-  final Function(Zone, PlantSearch) onRemoveFromGardenTap;
+  final Function(Plant) onDetailsTap;
+  final Function(Zone, Plant) onRemoveFromGardenTap;
   final Function(Zone) onDeleteZone;
 
   const ZoneContainer(
@@ -47,7 +48,7 @@ class ZoneContainer extends StatelessWidget {
             SearchPlantCard(
                 plant: plant,
                 onDetailsTap: onDetailsTap,
-                onRemoveFromGardenTap: (PlantSearch plant) {
+                onRemoveFromGardenTap: (Plant plant) {
                   onRemoveFromGardenTap(zone, plant);
                 })
       ],

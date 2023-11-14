@@ -1,10 +1,6 @@
 import 'dart:convert';
-import 'dart:developer';
-import 'dart:typed_data';
-
 import 'package:faaapu/data/base_repository.dart';
 import 'package:faaapu/model/cache/cached-plant-repository.dart';
-import 'package:faaapu/model/plant_search.dart';
 import 'package:faaapu/supabase/db.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,38 +17,38 @@ class PlantRepository extends BaseRepository {
     final sharedPreferences = await SharedPreferences.getInstance();
     final cachedData = sharedPreferences.getString(key);
     if (cachedData != null) {
-      cachedPlantRepository =
-          CachedPlantRepository.fromJson(jsonDecode(cachedData) as Map<String, dynamic>);
+      cachedPlantRepository = CachedPlantRepository.fromJson(
+          jsonDecode(cachedData) as Map<String, dynamic>);
     } else {
       // Handle the case when there is no cached data.
       cachedPlantRepository = const CachedPlantRepository(
-        plantSearches: [], // Provide appropriate default values
-        plants: {}, // Provide appropriate default values
+        plants: [],
       );
     }
   }
 
-  Future<void> _cacheRepository(CachedPlantRepository cachedPlantRepository) async {
+  Future<void> _cacheRepository(
+      CachedPlantRepository cachedPlantRepository) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final jsonEncodedData = cachedPlantRepository.toJson();
     await sharedPreferences.setString(key, jsonEncode(jsonEncodedData));
   }
 
-  Future<List<PlantSearch>> getPlantSearches() async {
+  Future<List<Plant>> getPlants() async {
     // Check for internet connection
     final isConnected = await super.isConnected();
 
     // always fetch the data if we can
     if (isConnected) {
-      List<PlantSearch> plantSearches = await _fetchPlantSearches();
+      List<Plant> plants = await _fetchPlants();
       // cache it
-      await _cacheRepository(CachedPlantRepository(plantSearches: plantSearches, plants: cachedPlantRepository.plants));
-      return plantSearches;
+      await _cacheRepository(CachedPlantRepository(plants: plants));
+      return plants;
     }
 
     // no network
     // return cache
-    return cachedPlantRepository.plantSearches;
+    return cachedPlantRepository.plants;
   }
 
   Future<Plant?> getPlant(int id) async {
@@ -66,10 +62,22 @@ class PlantRepository extends BaseRepository {
 
     // no network
     // return cache
-    if (cachedPlantRepository.plants.containsKey(id)) {
-      return cachedPlantRepository.plants[id];
-    } else {
-      return null;
+    return cachedPlantRepository.plants
+        .where((plant) => plant.id == id)
+        .firstOrNull;
+  }
+
+  Future<void> consolidatePlant(Plant plant) async {
+    final imageUrl = supabase.storage
+        .from('plants')
+        .getPublicUrl('images/${plant.imageUrl}');
+    plant.imageUrl = imageUrl;
+    if (plant.contentUrl != null) {
+      final contentRawFile = await supabase.storage
+          .from('plants')
+          .download('contents/${plant.contentUrl}');
+      final String markdownContent = utf8.decode(contentRawFile);
+      plant.content = markdownContent;
     }
   }
 
@@ -109,23 +117,14 @@ class PlantRepository extends BaseRepository {
         .single()
         .withConverter((plantResult) => Plant.fromJson(plantResult));
 
-    final imageUrl =
-    supabase.storage.from('plants').getPublicUrl('images/${plant.imageUrl}');
-    plant.imageUrl = imageUrl;
-
-
-    if (plant.contentUrl != null) {
-      final contentRawFile = await supabase.storage.from('plants').download('contents/${plant.contentUrl}');
-      final String markdownContent = utf8.decode(contentRawFile);
-      plant.content = markdownContent;
-    }
+    await consolidatePlant(plant);
 
     return plant;
   }
 
-  Future<List<PlantSearch>> _fetchPlantSearches() async {
+  Future<List<Plant>> _fetchPlants() async {
     var plants =
-    await supabase.from('plant').select<List<Map<String, dynamic>>>('''
+        await supabase.from('plant').select<List<Map<String, dynamic>>>('''
         id,
         name,
         image_url,
@@ -143,15 +142,21 @@ class PlantRepository extends BaseRepository {
         difficulty(name),
         type(name),
         usage(name),
-        light(name)
-        ''').withConverter((plantSearchResults) => plantSearchResults.map((data) => PlantSearch.fromJson(data)).toList());
-    // get the plant image
-    for (var plant in plants) {
-      final imageUrl =
-      supabase.storage.from('plants').getPublicUrl('images/${plant.imageUrl}');
-      plant.imageUrl = imageUrl;
-    }
+        light(name),
+        bloomSeasons:season!plant_bloom_season(start_month,end_month),
+        harvestSeasons:season!plant_harvest_season(start_month,end_month),
+        pruneSeasons:season!plant_prune_season(start_month,end_month),
+        plantingMethods:planting_method!plant_planting_method(name),
+        plantingSeasons:season!plant_planting_season(start_month,end_month),
+        soilHumidities:soil_humidity!plant_soil_humidity(name),
+        soilPhs:soil_ph!plant_soil_ph(name),
+        soilTypes:soil_type!plant_soil_type(name),
+        content_url
+        ''').withConverter((plantsResults) => plantsResults.map((data) => Plant.fromJson(data)).toList());
 
+    for (var plant in plants) {
+      await consolidatePlant(plant);
+    }
     return plants;
   }
 }

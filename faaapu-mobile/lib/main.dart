@@ -5,8 +5,8 @@ import 'package:faaapu/data/plant_repository.dart';
 import 'package:faaapu/data/zone_repository.dart';
 import 'package:faaapu/router/app_router.dart';
 import 'package:faaapu/state/light_cubit.dart';
-import 'package:faaapu/state/plant_search/plant_search_bloc.dart';
-import 'package:faaapu/state/plant_search/plant_search_event.dart';
+import 'package:faaapu/state/plant_search/plant_bloc.dart';
+import 'package:faaapu/state/plant_search/plant_event.dart';
 import 'package:faaapu/state/usage_cubit.dart';
 import 'package:faaapu/state/water_cubit.dart';
 import 'package:faaapu/state/zone/zone_bloc.dart';
@@ -41,10 +41,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppRouter appRouter = AppRouter();
-    return BlocProvider<PlantSearchBloc>(
+    return BlocProvider<PlantBloc>(
         create: (context) {
-          return PlantSearchBloc(plantSearchRepository: PlantRepository())
-            ..add(PlantSearchLoaded());
+          return PlantBloc(plantRepository: PlantRepository())
+            ..add(PlantsLoaded());
         },
         child: MultiBlocProvider(
             providers: [
