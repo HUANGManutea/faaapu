@@ -1,23 +1,31 @@
-import { Difficulty } from "./difficulty";
-import { Family } from "./family";
-import { Foliage } from "./foliage";
-import { Growth } from "./growth";
-import { Lifespan } from "./lifespan";
-import { Light } from "./light";
-import { PlantingMethod } from "./planting-method";
-import { Season } from "./season";
-import { Shape } from "./shape";
-import { SoilHumidity } from "./soil-humidity";
-import { SoilPh } from "./soil-ph";
-import { SoilType } from "./soil-type";
-import { Type } from "./type";
-import { Usage } from "./usage";
-import { Water } from "./water";
-
 export interface PlantUpsertDto {
   id?: number,
   name: string,
   scientificName: string,
-  imageUrl: string,
-  family: Family | null
+  imageUrl?: string,
+  image?: File,
+  family: string,
+  // growth: string,
+  // foliage: string,
+  // shape: string,
+  // water: string,
+  // lifespan: string,
+  // difficulty: string,
+  // type: string,
+  // bloomSeasonIds?: number[],
+  // harvestSeasonIds?: number[],
+  // pruneSeasonIds?: number[],
+  // plantingSeasonIds?: number[],
+  // usageIds?: number[],
+  // lightIds?: number[],
+  // plantingMethodIds?: number[],
+  // soilHumiditieIds?: number[],
+  // soilPhIds?: number[],
+  // soilTypeIds?: number[],
+  // lowHeight?: number | null,
+  // highHeight?: number | null,
+  // lowWidth?: number | null,
+  // highWidth?: number | null,
+  // contentUrl?: String | null,
+  // content?: String
 }
