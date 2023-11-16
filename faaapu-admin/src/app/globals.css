@@ -6,3 +6,7 @@ html, body, :root {
   width: 100%;
   height: 100%;
 }
+
+.label {
+  @apply p-1;
+}

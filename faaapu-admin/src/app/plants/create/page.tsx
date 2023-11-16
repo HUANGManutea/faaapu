@@ -1,22 +1,11 @@
-"use client";
+import UpsertPlantFormContainer from "@/app/components/upsert-plant-form-container";
 
-import UpsertPlantForm from "@/app/components/upsert-plant-form";
-import { PlantUpsertDto } from "@/app/model/plant-upsert-dto";
-import { useState } from "react";
-
-export type CreatePlantProps = {
-}
-
-export default function CreatePlant(props: CreatePlantProps) {
-
-  const onSubmit = async (plantUpsertDto: PlantUpsertDto) => {
-
-  }
+export default function CreatePlant({ params }: { params: { id: string } }) {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-10">
     <h1>Créer une plante</h1>
-      <UpsertPlantForm onSubmit={onSubmit}></UpsertPlantForm>
+      <UpsertPlantFormContainer></UpsertPlantFormContainer>
     </main>
   );
 }
