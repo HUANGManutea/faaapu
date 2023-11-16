@@ -1,4 +1,5 @@
 export interface Season {
-  startMonth: number;
-  endMonth: number;
+  id?: number,
+  startMonth?: number,
+  endMonth?: number,
 }

@@ -1,8 +1,9 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "../../../types/supabase";
-import { SimpleProperty } from "../model/simple-property";
+import { Property, SimpleProperty } from "../model/property";
+import { Season } from "../model/season";
 
-type SimplePropertyTableName = 'growth' | 'foliage' | 'shape' | 'water' | 'lifespan' | 'difficulty' | 'light' | 'type' | 'usage';
+export type PropertyTableName = 'growth' | 'foliage' | 'shape' | 'water' | 'lifespan' | 'difficulty' | 'light' | 'type' | 'usage' | 'planting_method' | 'soil_humidity' | 'soil_ph' | 'soil_type';
 
 export async function getFamilies(supabase: SupabaseClient<Database>): Promise<string[]> {
   try {
@@ -18,8 +19,8 @@ export async function getFamilies(supabase: SupabaseClient<Database>): Promise<s
   }
 }
 
-export async function getSimplePropertyList(supabase: SupabaseClient<Database>, tablename: SimplePropertyTableName): Promise<SimpleProperty[]> {
-  const result = await supabase.from(tablename).select('*');
+export async function getSimplePropertyList(supabase: SupabaseClient<Database>, tablename: PropertyTableName): Promise<SimpleProperty[]> {
+  const result = await supabase.from(tablename).select('id, name');
   if (result.error) {
     console.error("error getSimplePropertyList: ", result.error);
     return [];
@@ -30,87 +31,28 @@ export async function getSimplePropertyList(supabase: SupabaseClient<Database>, 
   }));
 }
 
-export async function getGrowths(supabase: SupabaseClient<Database>): Promise<SimpleProperty[]> {
-  try {
-    return await getSimplePropertyList(supabase, 'growth');
-  } catch (error) {
-    console.error("error getGrowths: ", error);
+export async function getAllPropertyList(supabase: SupabaseClient<Database>): Promise<Property[]> {
+  const result = await supabase.from('properties').select('id, name, tablename');
+  if (result.error) {
+    console.error("error getSimplePropertyList: ", result.error);
     return [];
   }
+  return result.data.map(e => ({
+    id: e.id!,
+    name: e.name!,
+    tablename: e.tablename!
+  }));
 }
 
-export async function getFoliages(supabase: SupabaseClient<Database>): Promise<SimpleProperty[]> {
-  try {
-    return await getSimplePropertyList(supabase, 'foliage');
-  } catch (error) {
-    console.error("error getFoliages: ", error);
-    return [];
-
-  }
-}
-
-export async function getShapes(supabase: SupabaseClient<Database>): Promise<SimpleProperty[]> {
-  try {
-    return await getSimplePropertyList(supabase, 'shape');
-  } catch (error) {
-    console.error("error getShapes: ", error);
-    return [];
-
-  }
-}
-
-export async function getWaters(supabase: SupabaseClient<Database>): Promise<SimpleProperty[]> {
-  try {
-    return await getSimplePropertyList(supabase, 'water');
-  } catch (error) {
-    console.error("error getWaters: ", error);
+export async function getSeasons(supabase:  SupabaseClient<Database>): Promise<Season[]> {
+  const result = await supabase.from('season').select('id, start_month, end_month');
+  if (result.error) {
+    console.error('error getSeasons: ', result.error);
     return [];
   }
+  return result.data.map(e => ({
+    id: e.id,
+    endMonth: e.end_month,
+    startMonth: e.start_month
+  }));
 }
-
-export async function getLifespans(supabase: SupabaseClient<Database>): Promise<SimpleProperty[]> {
-  try {
-    return await getSimplePropertyList(supabase, 'lifespan');
-  } catch (error) {
-    console.error("error getLifespan: ", error);
-    return [];
-  }
-}
-
-export async function getDifficulties(supabase: SupabaseClient<Database>): Promise<SimpleProperty[]> {
-  try {
-    return await getSimplePropertyList(supabase, 'difficulty');
-  } catch (error) {
-    console.error("error getDifficulty: ", error);
-    return [];
-  }
-}
-
-export async function getTypes(supabase: SupabaseClient<Database>): Promise<SimpleProperty[]> {
-  try {
-    return await getSimplePropertyList(supabase, 'type');
-  } catch (error) {
-    console.error("error getType: ", error);
-    return [];
-  }
-}
-
-// export async function getLights(supabase: SupabaseClient<Database>): Promise<SimpleProperty[]> {
-//   try {
-//     return await getSimplePropertyList(supabase, 'light');
-//   } catch (error) {
-//     console.error("error getLights: ", error);
-//     return [];
-
-//   }
-// }
-
-// export async function getUsages(supabase: SupabaseClient<Database>): Promise<SimpleProperty[]> {
-//   try {
-//     return await getSimplePropertyList(supabase, 'usage');
-//   } catch (error) {
-//     console.error("error getUsages: ", error);
-//     return [];
-//   }
-// }
-

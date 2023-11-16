@@ -1,10 +1,9 @@
 import { cookies } from "next/headers";
 import { Database } from "../../../types/supabase";
-import { getDifficulties, getFamilies, getFoliages, getGrowths, getLifespans, getShapes, getTypes, getWaters } from "../db/property-repository";
+import { PropertyTableName, getAllPropertyList, getFamilies, getSeasons } from "../db/property-repository";
 import { Plant } from "../model/plant";
-import { PlantUpsertDto } from "../model/plant-upsert-dto";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { SimpleProperty } from "../model/simple-property";
+import { Property, SimpleProperty } from "../model/property";
 import { IntOption, StringOption } from "../model/option";
 import UpsertPlantForm from "./upsert-plant-form";
 
@@ -22,22 +21,31 @@ export default async function UpsertPlantFormContainer({ plant }: UpsertPlantFor
     }));
   }
 
-  const simplePropertyListToIntOptions = (simplePropertyList: SimpleProperty[]): IntOption[] => {
-    return simplePropertyList.map((sp: SimpleProperty) => ({
+  const propertiesToIntOptions = (properties: Property[], tablename: PropertyTableName): IntOption[] => {
+    return properties.filter(p => p.tablename === tablename).map((sp: SimpleProperty) => ({
       label: sp.name,
       value: sp.id
     }));
   }
 
-
   const familyOptions = familiesToStringOptions(await getFamilies(supabase));
-  const growthOptions = simplePropertyListToIntOptions(await getGrowths(supabase));
-  const foliageOptions = simplePropertyListToIntOptions(await getFoliages(supabase));
-  const shapeOptions = simplePropertyListToIntOptions(await getShapes(supabase));
-  const waterOptions = simplePropertyListToIntOptions(await getWaters(supabase));
-  const lifespanOptions = simplePropertyListToIntOptions(await getLifespans(supabase));
-  const difficultyOptions = simplePropertyListToIntOptions(await getDifficulties(supabase));
-  const typeOptions = simplePropertyListToIntOptions(await getTypes(supabase));
+
+  const properties: Property[] = await getAllPropertyList(supabase);
+
+  const growthOptions = propertiesToIntOptions(properties, 'growth');
+  const foliageOptions = propertiesToIntOptions(properties, 'foliage');
+  const shapeOptions = propertiesToIntOptions(properties, 'shape');
+  const waterOptions = propertiesToIntOptions(properties, 'water');
+  const lifespanOptions = propertiesToIntOptions(properties, 'lifespan');
+  const difficultyOptions = propertiesToIntOptions(properties, 'difficulty');
+  const typeOptions = propertiesToIntOptions(properties, 'type');
+  const usageOptions = propertiesToIntOptions(properties, 'usage');
+  const lightOptions = propertiesToIntOptions(properties, 'light');
+  const plantingMethodOptions = propertiesToIntOptions(properties, 'planting_method');
+  const soilHumiditiesOptions = propertiesToIntOptions(properties, 'soil_humidity');
+  const soilPhOptions = propertiesToIntOptions(properties, 'soil_ph');
+  const soilTypeOptions = propertiesToIntOptions(properties, 'soil_type');
+  const seasons = await getSeasons(supabase);
 
   return (
     <UpsertPlantForm
@@ -50,6 +58,13 @@ export default async function UpsertPlantFormContainer({ plant }: UpsertPlantFor
       lifespanOptions={lifespanOptions}
       difficultyOptions={difficultyOptions}
       typeOptions={typeOptions}
+      usageOptions={usageOptions}
+      lightOptions={lightOptions}
+      plantingMethodOptions={plantingMethodOptions}
+      soilHumiditiesOptions={soilHumiditiesOptions}
+      soilPhOptions={soilPhOptions}
+      soilTypeOptions={soilTypeOptions}
+      seasons={seasons}
       ></UpsertPlantForm>
   );
 }

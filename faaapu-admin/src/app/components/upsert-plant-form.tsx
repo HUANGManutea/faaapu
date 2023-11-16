@@ -3,13 +3,15 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Plant } from "../model/plant"
 import { PlantUpsertDto } from "../model/plant-upsert-dto";
-import Select, { SingleValue } from 'react-select';
+import Select, { MultiValue, SingleValue } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "../../../types/supabase";
 import Image from 'next/image';
 import { IntOption, StringOption } from '../model/option';
-import { SimpleProperty } from "../model/simple-property";
+import { SimpleProperty } from "../model/property";
+import { Season } from "../model/season";
+import SeasonComponent from "./season-component";
 
 
 type UpsertPlantFormProps = {
@@ -21,7 +23,14 @@ type UpsertPlantFormProps = {
   waterOptions: IntOption[],
   lifespanOptions: IntOption[],
   difficultyOptions: IntOption[],
-  typeOptions: IntOption[]
+  typeOptions: IntOption[],
+  usageOptions: IntOption[],
+  lightOptions: IntOption[],
+  plantingMethodOptions: IntOption[],
+  soilHumiditiesOptions: IntOption[],
+  soilPhOptions: IntOption[],
+  soilTypeOptions: IntOption[],
+  seasons: Season[]
 }
 
 export default function UpsertPlantForm({
@@ -33,7 +42,14 @@ export default function UpsertPlantForm({
   waterOptions,
   lifespanOptions,
   difficultyOptions,
-  typeOptions
+  typeOptions,
+  usageOptions,
+  lightOptions,
+  plantingMethodOptions,
+  soilHumiditiesOptions,
+  soilPhOptions,
+  soilTypeOptions,
+  seasons
 }: UpsertPlantFormProps) {
   const [loading, setLoading] = useState(true);
   const [initCalled, setInitCalled] = useState(false);
@@ -49,6 +65,20 @@ export default function UpsertPlantForm({
   const [selectedLifespan, setSelectedLifespan] = useState<IntOption>();
   const [selectedDifficulty, setSelectedDifficulty] = useState<IntOption>();
   const [selectedType, setSelectedType] = useState<IntOption>();
+  const [selectedUsages, setSelectedUsages] = useState<IntOption[]>();
+  const [selectedLights, setSelectedLights] = useState<IntOption[]>();
+  const [selectedPlantingMethods, setSelectedPlantingMethods] = useState<IntOption[]>();
+  const [selectedSoilHumidities, setSelectedSoilHumidities] = useState<IntOption[]>();
+  const [selectedSoilPhs, setSelectedSoilPhs] = useState<IntOption[]>();
+  const [selectedSoilTypes, setSelectedSoilTypes] = useState<IntOption[]>();
+  const [lowHeight, setLowHeight] = useState<number>();
+  const [highHeight, setHighHeight] = useState<number>();
+  const [lowWidth, setLowWidth] = useState<number>();
+  const [highWidth, setHighWidth] = useState<number>();
+  const [bloomSeasons, setBloomSeasons] = useState<Season[]>();
+  const [harvestSeasons, setHarvestSeasons] = useState<Season[]>();
+  const [pruneSeasons, setPruneSeasons] = useState<Season[]>();
+  const [plantingSeasons, setPlantingSeasons] = useState<Season[]>();
   const supabase = createClientComponentClient<Database>();
 
   const init = async () => {
@@ -76,6 +106,51 @@ export default function UpsertPlantForm({
     if (plant?.type) {
       setSelectedType(typeOptions.find(option => option.label === plant?.type));
     }
+
+    if (plant?.usages) {
+      setSelectedUsages(usageOptions.filter(option => plant.usages!.find(e => e === option.label)));
+    }
+    if (plant?.lights) {
+      setSelectedLights(lightOptions.filter(option => plant.lights!.find(e => e === option.label)));
+    }
+    if (plant?.plantingMethods) {
+      setSelectedPlantingMethods(plantingMethodOptions.filter(option => plant.plantingMethods!.find(e => e === option.label)));
+    }
+    if (plant?.soilHumidities) {
+      setSelectedSoilHumidities(soilHumiditiesOptions.filter(option => plant.soilHumidities!.find(e => e === option.label)));
+    }
+    if (plant?.soilPhs) {
+      setSelectedSoilPhs(soilPhOptions.filter(option => plant.soilPhs!.find(e => e === option.label)));
+    }
+    if (plant?.soilTypes) {
+      setSelectedSoilTypes(soilTypeOptions.filter(option => plant.soilTypes!.find(e => e === option.label)));
+    }
+    if (plant?.lowHeight) {
+      setLowHeight(plant.lowHeight);
+    }
+    if (plant?.highHeight) {
+      setHighHeight(plant.highHeight);
+    }
+    if (plant?.lowWidth) {
+      setLowWidth(plant.lowWidth);
+    }
+    if (plant?.highWidth) {
+      setHighWidth(plant.highWidth);
+    }
+
+    if (plant?.bloomSeasons) {
+      setBloomSeasons(plant.bloomSeasons);
+    }
+    if (plant?.harvestSeasons) {
+      setHarvestSeasons(plant.harvestSeasons);
+    }
+    if (plant?.pruneSeasons) {
+      setPruneSeasons(plant.pruneSeasons);
+    }
+    if (plant?.plantingSeasons) {
+      setPlantingSeasons(plant.plantingSeasons);
+    }
+
     setLoading(false);
     setInitCalled(true);
   }
@@ -93,12 +168,19 @@ export default function UpsertPlantForm({
       scientificName: scientificName,
       family: selectedFamily!.value,
       growthId: selectedGrowth!.value,
-      foliageId: 0,
-      shapeId: 0,
-      waterId: 0,
-      lifespanId: 0,
-      difficultyId: 0,
-      typeId: 0,
+      foliageId: selectedFoliage!.value,
+      shapeId: selectedShape!.value,
+      waterId: selectedWater!.value,
+      lifespanId: selectedLifespan!.value,
+      difficultyId: selectedDifficulty!.value,
+      typeId: selectedType!.value,
+      usageIds: selectedUsages!.map(v => v.value),
+      lightIds: selectedLights!.map(v => v.value),
+      plantingMethodIds: selectedPlantingMethods!.map(v => v.value),
+      soilHumiditieIds: selectedSoilHumidities!.map(v => v.value),
+      soilPhIds: selectedSoilPhs!.map(v => v.value),
+      soilTypeIds: selectedSoilTypes!.map(v => v.value),
+      bloomSeasonIds: bloomSeasons?.map(s => s.id!)
     };
     if (uploadedImage) {
       dto.image = uploadedImage;
@@ -106,12 +188,6 @@ export default function UpsertPlantForm({
       dto.imageUrl = plant?.imageUrl
     }
     onSubmit(dto);
-  }
-
-  const onFamilyChange = (option: SingleValue<StringOption>) => {
-    if (option) {
-      setSelectedFamily(option);
-    }
   }
 
   const loadImage = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -155,7 +231,7 @@ export default function UpsertPlantForm({
         <div className="form-control w-full max-w-xs">
           <label className="label">
             <span className="label-text">Famille</span>
-            <span className="label-text label-text-alt text-primary">Créable</span>
+            <span className="label-text label-text-alt text-primary">Créable, Unique</span>
           </label>
           <CreatableSelect className="leading-8" options={familyOptions} value={selectedFamily} onChange={(newValue) => setSelectedFamily(newValue ?? undefined)} />
         </div>
@@ -183,7 +259,7 @@ export default function UpsertPlantForm({
         <div className="form-control w-full max-w-xs">
           <label className="label">
             <span className="label-text">Forme</span>
-            <span className="label-text label-text-alt text-primary">Créable</span>
+            <span className="label-text label-text-alt text-primary">Créable, Unique</span>
           </label>
           <CreatableSelect className="leading-8" options={shapeOptions} value={selectedShape} onChange={(newValue) => setSelectedShape(newValue ?? undefined)} />
         </div>
@@ -208,12 +284,112 @@ export default function UpsertPlantForm({
         <div className="form-control w-full max-w-xs">
           <label className="label">
             <span className="label-text">Type</span>
-            <span className="label-text label-text-alt text-primary">Créable</span>
+            <span className="label-text label-text-alt text-primary">Créable, Unique</span>
           </label>
           <CreatableSelect className="leading-8" options={typeOptions} value={selectedType} onChange={(newValue) => setSelectedType(newValue ?? undefined)} />
         </div>
+
+        <div className="form-control w-full max-w-xs">
+          <label className="label">
+            <span className="label-text">Utilisations</span>
+            <span className="label-text label-text-alt text-primary">Créable, Multiple</span>
+          </label>
+          <CreatableSelect className="leading-8" options={usageOptions} value={selectedUsages} isMulti onChange={(newValue) => setSelectedUsages(newValue as IntOption[])} />
+        </div>
+        <div className="form-control w-full max-w-xs">
+          <label className="label">
+            <span className="label-text">Ensoleillement</span>
+            <span className="label-text label-text-alt text-primary">Multiple</span>
+          </label>
+          <Select className="leading-8" options={lightOptions} value={selectedLights} isMulti onChange={(newValue) => setSelectedLights(newValue as IntOption[])} />
+        </div>
+        <div className="form-control w-full max-w-xs">
+          <label className="label">
+            <span className="label-text">Plantation</span>
+            <span className="label-text label-text-alt text-primary">Multiple</span>
+          </label>
+          <Select className="leading-8" options={plantingMethodOptions} value={selectedPlantingMethods} isMulti onChange={(newValue) => setSelectedPlantingMethods(newValue as IntOption[])} />
+        </div>
+        <div className="form-control w-full max-w-xs">
+          <label className="label">
+            <span className="label-text">Humidité du sol</span>
+            <span className="label-text label-text-alt text-primary">Multiple</span>
+          </label>
+          <Select className="leading-8" options={soilHumiditiesOptions} value={selectedSoilHumidities} isMulti onChange={(newValue) => setSelectedSoilHumidities(newValue as IntOption[])} />
+        </div>
+        <div className="form-control w-full max-w-xs">
+          <label className="label">
+            <span className="label-text">Ph du sol</span>
+            <span className="label-text label-text-alt text-primary">Multiple</span>
+          </label>
+          <Select className="leading-8" options={soilPhOptions} value={selectedSoilPhs} isMulti onChange={(newValue) => setSelectedSoilPhs(newValue as IntOption[])} />
+        </div>
+        <div className="form-control w-full max-w-xs">
+          <label className="label">
+            <span className="label-text">Type de sol</span>
+            <span className="label-text label-text-alt text-primary">Multiple</span>
+          </label>
+          <Select className="leading-8" options={soilTypeOptions} value={selectedSoilTypes} isMulti onChange={(newValue) => setSelectedSoilTypes(newValue as IntOption[])} />
+        </div>
+        <div className="form-control w-full max-w-xs">
+          <label className="label">
+            <span className="label-text">Hauteur minimale à l'âge adulte (mètres)</span>
+          </label>
+          <input type="number" min="0" step="0.01" className="input input-bordered w-full max-w-xs" value={lowHeight} onChange={(e) => setLowHeight(Number(e.target.value))} />
+        </div>
+        <div className="form-control w-full max-w-xs">
+          <label className="label">
+            <span className="label-text">Hauteur maximale à l'âge adulte (mètres)</span>
+          </label>
+          <input type="number" min="0" step="0.01" className="input input-bordered w-full max-w-xs" value={highHeight} onChange={(e) => setHighHeight(Number(e.target.value))} />
+        </div>
+        <div className="form-control w-full max-w-xs">
+          <label className="label">
+            <span className="label-text">Largeur minimale à l'âge adulte (mètres)</span>
+          </label>
+          <input type="number" min="0" step="0.01" className="input input-bordered w-full max-w-xs" value={lowWidth} onChange={(e) => setLowWidth(Number(e.target.value))} />
+        </div>
+        <div className="form-control w-full max-w-xs">
+          <label className="label">
+            <span className="label-text">Largeur maximale à l'âge adulte (mètres)</span>
+          </label>
+          <input type="number" min="0" step="0.01" className="input input-bordered w-full max-w-xs" value={highWidth} onChange={(e) => setHighWidth(Number(e.target.value))} />
+        </div>
+        {/* empty div */}
+        <div></div>
+        <div className="form-control w-full max-w-xs">
+          <label className="label">
+            <span className="label-text">Saisons de floraison</span>
+            <span className="label-text label-text-alt text-primary">Clickable</span>
+          </label>
+          <SeasonComponent seasons={bloomSeasons} onSeasonsChanged={(seasons => setBloomSeasons(seasons))}></SeasonComponent>
+        </div>
+        <div className="form-control w-full max-w-xs">
+          <label className="label">
+            <span className="label-text">Saisons de récolte</span>
+            <span className="label-text label-text-alt text-primary">Clickable</span>
+          </label>
+          <SeasonComponent seasons={harvestSeasons} onSeasonsChanged={(seasons => setHarvestSeasons(seasons))}></SeasonComponent>
+        </div>
+        <div className="form-control w-full max-w-xs">
+          <label className="label">
+            <span className="label-text">Saisons de taille</span>
+            <span className="label-text label-text-alt text-primary">Clickable</span>
+          </label>
+          <SeasonComponent seasons={pruneSeasons} onSeasonsChanged={(seasons => setPruneSeasons(seasons))}></SeasonComponent>
+        </div>
+        <div className="form-control w-full max-w-xs">
+          <label className="label">
+            <span className="label-text">Saisons de plantation</span>
+            <span className="label-text label-text-alt text-primary">Clickable</span>
+          </label>
+          <SeasonComponent seasons={plantingSeasons} onSeasonsChanged={(seasons => setPlantingSeasons(seasons))}></SeasonComponent>
+        </div>
+
       </div>
-      <input type="submit" className="btn btn-primary" value={plant ? 'Modifier' : 'Créer'}/>
+
+
+      <input type="submit" className="btn btn-primary" value={plant ? 'Modifier' : 'Créer'} />
     </form>
   );
 }
