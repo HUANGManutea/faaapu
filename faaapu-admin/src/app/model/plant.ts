@@ -27,6 +27,6 @@ export interface Plant {
   highHeight?: number | null,
   lowWidth?: number | null,
   highWidth?: number | null,
-  contentUrl?: String | null,
-  content?: String
+  contentUrl?: string | null,
+  content?: string
 }

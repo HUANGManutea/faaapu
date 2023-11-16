@@ -13,11 +13,14 @@ export async function countNbPlants(supabase: SupabaseClient<Database>): Promise
   }
 }
 
-async function consolidatePlant(supabase: SupabaseClient<Database>, plant: Plant) {
+async function consolidatePlantWithImage(supabase: SupabaseClient<Database>, plant: Plant) {
   const imageUrl = supabase.storage
       .from('plants')
       .getPublicUrl(`images/${plant.imageUrl}`);
   plant.imageUrl = imageUrl.data.publicUrl;
+}
+
+export async function consolidatePlantWithContent(supabase: SupabaseClient<Database>, plant: Plant) {
   if (plant.contentUrl != null) {
     const contentRawFile = await supabase.storage
         .from('plants')
@@ -62,7 +65,6 @@ export async function getPlant(supabase: SupabaseClient<Database>, id: number): 
   content_url`)
     .eq('id', id).single();
   if (data) {
-
     plant = {
       id: data.id,
       name: data.name,
@@ -93,7 +95,7 @@ export async function getPlant(supabase: SupabaseClient<Database>, id: number): 
       contentUrl: data.content_url
     }
 
-    await consolidatePlant(supabase, plant);
+    await consolidatePlantWithImage(supabase, plant);
   };
 
   
@@ -162,7 +164,7 @@ export async function getRangePlants(supabase: SupabaseClient<Database>, start: 
         contentUrl: plantData.content_url
       }
   
-      await consolidatePlant(supabase, plant);
+      await consolidatePlantWithImage(supabase, plant);
       plants.push(plant);
     }
   };

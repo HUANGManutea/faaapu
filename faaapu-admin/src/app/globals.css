@@ -10,3 +10,15 @@ html, body, :root {
 .label {
   @apply p-1;
 }
+
+h1 {
+  @apply text-2xl pb-3;
+}
+
+h2 {
+  @apply text-xl pb-2;
+}
+
+p {
+  @apply pb-1;
+}
