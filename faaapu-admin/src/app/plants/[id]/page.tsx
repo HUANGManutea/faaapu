@@ -4,9 +4,11 @@ import { consolidatePlantWithContent, getPlant } from "@/app/db/plant-repository
 import { useParams } from 'next/navigation';
 import UpsertPlantFormContainer from "@/app/components/upsert-plant-form-container";
 import { cookies } from "next/headers";
+import Link from "next/link";
+import Navbar from "@/app/components/navbar";
 
 export default async function PlantDetails({ params }: { params: { id: string } }) {
-  const supabase = createServerComponentClient<Database>({cookies});
+  const supabase = createServerComponentClient<Database>({ cookies });
 
   if (!params.id || Array.isArray(params.id)) {
     return <div>Error getting plant id</div>;
@@ -21,9 +23,15 @@ export default async function PlantDetails({ params }: { params: { id: string } 
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-10">
-      <h1>Modifier une plante</h1>
-      <UpsertPlantFormContainer plant={plant}></UpsertPlantFormContainer>
+    <main className="flex min-h-screen flex-col">
+      <Navbar prevRoute={{href: "/plants", label: "Plantes"}}></Navbar>
+      <div className="flex h-full flex-col items-center p-10">
+        <div className="flex flex-row w-full justify-between">
+          <h1>Modifier une plante</h1>
+          <div></div>
+        </div>
+        <UpsertPlantFormContainer plant={plant}></UpsertPlantFormContainer>
+      </div>
     </main>
   );
 }

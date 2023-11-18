@@ -13,12 +13,14 @@ import { SimpleProperty } from "../model/property";
 import { Season } from "../model/season";
 import SeasonComponent from "./season-component";
 import ContentView from "./content-view";
-import { consolidatePlantWithContent } from "../db/plant-repository";
+import { consolidatePlantWithContent, deleteContent, deleteImage, uploadContent, uploadImage } from "../db/plant-repository";
+import { createFamily, createSeasons, createShape, createType, createUsages } from "../db/property-repository";
+import { UploadResult } from "../model/upload-result";
 
 
 type UpsertPlantFormProps = {
   plant?: Plant,
-  familyOptions: StringOption[],
+  familyOptions: IntOption[],
   growthOptions: IntOption[],
   foliageOptions: IntOption[],
   shapeOptions: IntOption[],
@@ -57,7 +59,7 @@ export default function UpsertPlantForm({
   const [initCalled, setInitCalled] = useState(false);
   const [name, setName] = useState(plant?.name ?? '');
   const [scientificName, setScientificName] = useState(plant?.scientificName ?? '');
-  const [selectedFamily, setSelectedFamily] = useState<StringOption>();
+  const [selectedFamily, setSelectedFamily] = useState<IntOption>();
   const [imageUrl, setImageUrl] = useState(plant?.imageUrl ?? '');
   const [uploadedImage, setUploadedImage] = useState<File>();
   const [selectedGrowth, setSelectedGrowth] = useState<IntOption>();
@@ -81,12 +83,13 @@ export default function UpsertPlantForm({
   const [harvestSeasons, setHarvestSeasons] = useState<Season[]>();
   const [pruneSeasons, setPruneSeasons] = useState<Season[]>();
   const [plantingSeasons, setPlantingSeasons] = useState<Season[]>();
+  const [contentFilename, setContentFilename] = useState("");
   const [content, setContent] = useState("");
   const supabase = createClientComponentClient<Database>();
 
   const init = async () => {
     if (plant?.family) {
-      setSelectedFamily(familyOptions.find(option => option.value === plant?.family));
+      setSelectedFamily(familyOptions.find(option => option.label === plant?.family));
     }
     if (plant?.growth) {
       setSelectedGrowth(growthOptions.find(option => option.label === plant?.growth));
@@ -154,6 +157,10 @@ export default function UpsertPlantForm({
       setPlantingSeasons(plant.plantingSeasons);
     }
 
+    if (plant?.contentUrl) {
+      setContentFilename(plant.contentUrl);
+    }
+
     if (plant?.content) {
       setContent(plant.content);
     }
@@ -167,35 +174,6 @@ export default function UpsertPlantForm({
       init();
     }
   }, [loading, initCalled]);
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const dto: PlantUpsertDto = {
-      name: name,
-      scientificName: scientificName,
-      family: selectedFamily!.value,
-      growthId: selectedGrowth!.value,
-      foliageId: selectedFoliage!.value,
-      shapeId: selectedShape!.value,
-      waterId: selectedWater!.value,
-      lifespanId: selectedLifespan!.value,
-      difficultyId: selectedDifficulty!.value,
-      typeId: selectedType!.value,
-      usageIds: selectedUsages!.map(v => v.value),
-      lightIds: selectedLights!.map(v => v.value),
-      plantingMethodIds: selectedPlantingMethods!.map(v => v.value),
-      soilHumiditieIds: selectedSoilHumidities!.map(v => v.value),
-      soilPhIds: selectedSoilPhs!.map(v => v.value),
-      soilTypeIds: selectedSoilTypes!.map(v => v.value),
-      bloomSeasonIds: bloomSeasons?.map(s => s.id!)
-    };
-    if (uploadedImage) {
-      dto.image = uploadedImage;
-    } else {
-      dto.imageUrl = plant?.imageUrl
-    }
-    onSubmit(dto);
-  }
 
   const loadImage = async (e: ChangeEvent<HTMLInputElement>) => {
     if (imageUrl.startsWith('blob')) {
@@ -220,11 +198,155 @@ export default function UpsertPlantForm({
     console.log(dto);
   }
 
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const uploadResult = await uploadNewData();
+    console.log("uploadResult", uploadResult);
+    if (uploadResult.error) {
+      console.log(uploadResult.error);
+    } else {
+      const dto: PlantUpsertDto = {
+        name: name,
+        scientificName: scientificName,
+        familyId: uploadResult.familyId ?? selectedFamily!.value,
+        imageUrl: uploadResult.imageUrl ?? imageUrl,
+        growthId: selectedGrowth!.value,
+        foliageId: selectedFoliage!.value,
+        shapeId: uploadResult.shapeId ?? selectedShape!.value,
+        waterId: selectedWater!.value,
+        lifespanId: selectedLifespan!.value,
+        difficultyId: selectedDifficulty!.value,
+        typeId: uploadResult.typeId ?? selectedType!.value,
+        usageIds: uploadResult.usageIds ?? selectedUsages!.map(v => v.value),
+        lightIds: selectedLights!.map(v => v.value),
+        plantingMethodIds: selectedPlantingMethods!.map(v => v.value),
+        soilHumiditieIds: selectedSoilHumidities!.map(v => v.value),
+        soilPhIds: selectedSoilPhs!.map(v => v.value),
+        soilTypeIds: selectedSoilTypes!.map(v => v.value),
+        bloomSeasonIds: uploadResult.bloomSeasonIds ?? bloomSeasons?.map(s => s.id!),
+        harvestSeasonIds: uploadResult.harvestSeasonIds ?? harvestSeasons?.map(s => s.id!),
+        pruneSeasonIds: uploadResult.pruneSeasonIds ?? pruneSeasons?.map(s => s.id!),
+        plantingSeasonIds: uploadResult.plantingSeasonIds ?? plantingSeasons?.map(s => s.id!),
+        contentUrl: uploadResult.contentUrl ?? contentFilename,
+      };
+      onSubmit(dto);
+    }
+  }
+
+  const uploadNewData = async () => {
+    const uploadResult: UploadResult = {
+    };
+
+    if (selectedFamily && !familyOptions.find(option => option.label === selectedFamily.label)) {
+      // create family
+      const family = await createFamily(supabase, selectedFamily!.label);
+      if (family) {
+        uploadResult.familyId = family.id;
+      } else {
+        uploadResult.error = "failed to create family";
+        return uploadResult
+      }
+    }
+
+    if (uploadedImage) {
+      // remove previous image
+      if (plant?.imageUrl) {
+        await deleteImage(supabase, plant.imageUrl);
+      }
+      // upload image
+      uploadResult.imageUrl = await uploadImage(supabase, uploadedImage);
+    }
+    if (selectedShape && !shapeOptions.find(option => option.label === selectedShape.label)) {
+      // create shape
+      const shape = await createShape(supabase, selectedShape.label);
+      if (shape) {
+        uploadResult.shapeId = shape.id;
+      } else {
+        uploadResult.error = "failed to create shape";
+        return uploadResult;
+      }
+    }
+    if (selectedType && !typeOptions.find(option => option.label === selectedType.label)) {
+      // create type
+      const type = await createType(supabase, selectedType.label);
+      if (type) {
+        uploadResult.typeId = type.id;
+      } else {
+        uploadResult.error = "failed to create type";
+        return uploadResult;
+      }
+    }
+    if (selectedUsages) {
+      const newUsageNames: string[] = selectedUsages
+        .filter(usage => usageOptions.find(option => option.label === usage?.label))
+        .map(u => u.label);
+      const usages = await createUsages(supabase, newUsageNames);
+      if (usages) {
+        uploadResult.usageIds = usages;
+      } else {
+        uploadResult.error = "failed to create usages";
+        return uploadResult;
+      }
+    }
+    if (bloomSeasons) {
+      const newSeasons = bloomSeasons.filter(s => s.id === 0);
+      if (newSeasons.length > 0) {
+        // create seasons
+        const createdSeasons = await createSeasons(supabase, seasons);
+        if (createdSeasons) {
+          uploadResult.bloomSeasonIds = createdSeasons;
+        }
+      }
+    }
+    if (harvestSeasons) {
+      const newSeasons = harvestSeasons.filter(s => s.id === 0);
+      if (newSeasons.length > 0) {
+        // create seasons
+        const createdSeasons = await createSeasons(supabase, seasons);
+        if (createdSeasons) {
+          uploadResult.bloomSeasonIds = createdSeasons;
+        }
+      }
+    }
+    if (pruneSeasons) {
+      const newSeasons = pruneSeasons.filter(s => s.id === 0);
+      if (newSeasons.length > 0) {
+        // create seasons
+        const createdSeasons = await createSeasons(supabase, seasons);
+        if (createdSeasons) {
+          uploadResult.bloomSeasonIds = createdSeasons;
+        }
+      }
+    }
+    if (plantingSeasons) {
+      const newSeasons = plantingSeasons.filter(s => s.id === 0);
+      if (newSeasons.length > 0) {
+        // create seasons
+        const createdSeasons = await createSeasons(supabase, seasons);
+        if (createdSeasons) {
+          uploadResult.bloomSeasonIds = createdSeasons;
+        }
+      }
+    }
+    if (content !== "" && content !== plant?.content) {
+      const isUpdate = contentFilename === plant?.content;
+      await deleteContent(supabase, contentFilename);
+      const createdFileName = await uploadContent(supabase, content, contentFilename, isUpdate);
+      if (createdFileName !== '') {
+        uploadResult.contentUrl = createdFileName;
+      } else {
+        uploadResult.error = "failed to upload content";
+        return uploadResult;
+      }
+    }
+    return uploadResult;
+  }
+
   return (
     <form className="flex flex-col h-full w-full gap-5" method="POST" onSubmit={(e) => handleSubmit(e)}>
       <div className="flex flex-row flex-grow items-stretch h-full w-full gap-2">
         <div className="flex flex-col flex-1 justify-center items-center">
-        <h2>Caractéristiques</h2>
+          <h2>Caractéristiques</h2>
           <div className="grid grid-cols-2 gap-2">
             <div className="form-control w-full max-w-xs">
               <label className="label">
@@ -399,7 +521,7 @@ export default function UpsertPlantForm({
         </div>
         <div className="flex flex-col flex-1 items-center">
           <h2>Contenu</h2>
-          <div className="flex flex-col w-full h-full">
+          <div className="flex flex-col w-full min-h-full">
             <ContentView content={content} onContentChanged={(c) => setContent(c)}></ContentView>
           </div>
         </div>

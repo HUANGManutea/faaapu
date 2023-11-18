@@ -61,8 +61,8 @@ export default function PlantsComponent(props: PlantsComponentProps) {
 
   return (
     <div className="flex flex-col w-full h-full gap-5">
-      <h1>Plantes</h1>
-      <div className="flex flex-row">
+      <div className="flex flex-row w-full justify-between">
+        <h1>Plantes</h1>
         <button className="btn btn-primary" onClick={() => onCreatePlant()}>Créer une plante</button>
       </div>
       <PaginationView

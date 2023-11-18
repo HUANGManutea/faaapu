@@ -21,6 +21,22 @@ export default function Pagination(props: PaginationProps) {
       props.onPaginationClick(index);
     }
   }
+
+  if (!pageElements || pageElements.length === 0) {
+    return <></>;
+  }
+
+  if (pageElements.length === 1) {
+    // If there is only one element, return it as a button without a join group
+    return (
+      <button
+        className={`btn ${props.page === 0 ? 'btn-active' : ''}`}
+        onClick={() => onClick(0)}
+      >
+        1
+      </button>
+    );
+  }
   
   return (
     <div className="join">
@@ -33,5 +49,4 @@ export default function Pagination(props: PaginationProps) {
       }
     </div>
   );
-
 }

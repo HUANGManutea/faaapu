@@ -20,6 +20,51 @@ async function consolidatePlantWithImage(supabase: SupabaseClient<Database>, pla
   plant.imageUrl = imageUrl.data.publicUrl;
 }
 
+export async function deleteImage(supabase: SupabaseClient<Database>, imageUrl: string): Promise<boolean> {
+  const result = await supabase.storage
+      .from('plants')
+      .remove([`images/${imageUrl}`]);
+  if (result.error) {
+    console.error(`failed to delete image ${imageUrl}`);
+  }
+  return result.error == null;
+}
+export async function uploadImage(supabase: SupabaseClient<Database>, file: File): Promise<string> {
+  const result = await supabase.storage
+      .from('plants')
+      .upload(`images/${file.name}`, file);
+  if (result.error) {
+    console.error(`failed to create image ${file.name}`);
+    return '';
+  }
+  return file.name;
+}
+
+export async function uploadContent(supabase: SupabaseClient<Database>, content: String, filename: string, isUpload: boolean): Promise<string> {
+  const blob = new Blob([content as BlobPart], { type: "text/markdown" });
+  const file = new File([blob], filename, { type: "text/markdown" });
+  const result = await supabase.storage
+      .from('plants')
+      .upload(`contents/${filename}`, file, {
+        upsert: isUpload
+      });
+  if (result.error) {
+    console.error(`failed to create content ${file.name}`);
+    return '';
+  }
+  return file.name;
+}
+
+export async function deleteContent(supabase: SupabaseClient<Database>, filename: string): Promise<boolean> {
+  const result = await supabase.storage
+      .from('plants')
+      .remove([`contents/${filename}`]);
+  if (result.error) {
+    console.error(`failed to delete content ${filename}`);
+  }
+  return result.error == null;
+}
+
 export async function consolidatePlantWithContent(supabase: SupabaseClient<Database>, plant: Plant) {
   if (plant.contentUrl != null) {
     const contentRawFile = await supabase.storage

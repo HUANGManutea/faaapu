@@ -2,9 +2,8 @@ export interface PlantUpsertDto {
   id?: number,
   name: string,
   scientificName: string,
-  imageUrl?: string,
-  image?: File,
-  family: string,
+  imageUrl: string,
+  familyId: number,
   growthId: number,
   foliageId: number,
   shapeId: number,
@@ -29,6 +28,5 @@ export interface PlantUpsertDto {
   pruneSeasonIds?: number[],
   plantingSeasonIds?: number[],
 
-  // contentUrl?: String | null,
-  // content?: String
+  contentUrl?: String | null,
 }

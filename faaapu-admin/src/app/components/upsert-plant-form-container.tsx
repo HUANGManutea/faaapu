@@ -14,10 +14,10 @@ type UpsertPlantFormContainerProps = {
 export default async function UpsertPlantFormContainer({ plant }: UpsertPlantFormContainerProps) {
   const supabase = createServerComponentClient<Database>({ cookies })
 
-  const familiesToStringOptions = (families: string[]): StringOption[] => {
-    return families.map((f: string) => ({
-      label: f,
-      value: f
+  const familiesToStringOptions = (families: SimpleProperty[]): IntOption[] => {
+    return families.map((f: SimpleProperty) => ({
+      label: f.name,
+      value: f.id
     }));
   }
 
