@@ -27,6 +27,10 @@ export default function PlantTable(props: PlantTableProps) {
     router.push(`/plants/${plant.id}`);
   };
 
+  const updatePlant = (plant: Plant) => {
+    router.push(`/plants/${plant.id}`);
+  }
+
   const setSortingColumn = (column: string | null) => {
     setSortColumn(column);
   };
@@ -134,7 +138,12 @@ export default function PlantTable(props: PlantTableProps) {
           <td>{plant.name}</td>
           <td>{plant.scientificName}</td>
           <td>{plant.family}</td>
-          <td><button className="btn btn-secondary" onClick={() => viewPlantDetails(plant)}>Détails</button></td>
+          <td>
+            <div className="flex flex-row justify-between gap-5">
+              <button className="btn btn-primary" onClick={() => updatePlant(plant)}>Modifier</button>
+              <button className="btn btn-secondary" onClick={() => viewPlantDetails(plant)}>Voir</button>
+            </div>
+          </td>
         </tr>)}
       </tbody>
     </table>
