@@ -22,3 +22,11 @@ h2 {
 p {
   @apply pb-1;
 }
+
+.section-container {
+  @apply flex flex-col px-96 py-10;
+  background-image: url('/images/faaapu-fresque.png'), url('/images/faaapu-fresque.png');
+  background-repeat: repeat-y, repeat-y;
+  background-position: left, right;
+  background-size: 5%;
+}

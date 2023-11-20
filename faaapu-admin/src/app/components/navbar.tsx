@@ -53,7 +53,7 @@ export default function Navbar(props: NavbarProps) {
         {props.prevRoute ? <Link href={props.prevRoute.href} className="btn btn-ghost">{`< ${props.prevRoute.label}`}</Link> : <></>}
       </div>
       <div className="navbar-center">
-        <Link href={'/plants'} className="btn btn-ghost text-xl">Fa'a'apu</Link>
+        <Link href="/" className="btn btn-ghost text-xl">Fa'a'apu</Link>
       </div>
       <div className="navbar-end flex flex-row gap-5">
         <label>{user?.email}</label>

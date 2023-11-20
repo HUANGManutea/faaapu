@@ -11,6 +11,7 @@ export interface PlantUpsertDto {
   lifespanId: number,
   difficultyId: number,
   typeId: number,
+
   usageIds: number[],
   lightIds: number[],
   plantingMethodIds: number[],
@@ -23,10 +24,10 @@ export interface PlantUpsertDto {
   lowWidth?: number,
   highWidth?: number,
 
-  bloomSeasonIds?: number[],
-  harvestSeasonIds?: number[],
-  pruneSeasonIds?: number[],
-  plantingSeasonIds?: number[],
+  bloomSeasonIds: number[],
+  harvestSeasonIds: number[],
+  pruneSeasonIds: number[],
+  plantingSeasonIds: number[],
 
-  contentUrl?: String | null,
+  contentUrl?: string,
 }

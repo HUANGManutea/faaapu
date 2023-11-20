@@ -10,6 +10,7 @@ import { ItemRange } from "../model/item-range";
 import Pagination from "./pagination";
 import PaginationView from "./pagination-view";
 import { useRouter } from "next/navigation";
+import LoadingSpinner from "./loading-spinner";
 
 type PlantsComponentProps = {
 
@@ -39,7 +40,7 @@ export default function PlantsComponent(props: PlantsComponentProps) {
   }, [loading, initCalled]);
 
   if (loading) {
-    return <div>Chargement</div>;
+    return <LoadingSpinner />;
   }
 
   const onPaginationClick = async (index: number, range: ItemRange) => {

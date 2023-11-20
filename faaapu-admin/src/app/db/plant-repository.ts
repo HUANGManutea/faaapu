@@ -2,6 +2,8 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "../../../types/supabase";
 import { Plant } from "../model/plant";
 import { Season } from "../model/season";
+import { PlantUpsertDto } from "../model/plant-upsert-dto";
+import { associateLightsToPlant, associatePlantingMethodsToPlant, associateSeasonsToPlant, associateSoilHumiditiesToPlant, associateSoilPhsToPlant, associateSoilTypesToPlant, associateUsagesToPlant } from "./property-repository";
 
 export async function countNbPlants(supabase: SupabaseClient<Database>): Promise<number | null> {
   const { count, error } = await supabase.from('plant').select('*', {count: 'exact', head: true});
@@ -40,7 +42,7 @@ export async function uploadImage(supabase: SupabaseClient<Database>, file: File
   return file.name;
 }
 
-export async function uploadContent(supabase: SupabaseClient<Database>, content: String, filename: string, isUpload: boolean): Promise<string> {
+export async function uploadContent(supabase: SupabaseClient<Database>, content: string, filename: string, isUpload: boolean): Promise<string> {
   const blob = new Blob([content as BlobPart], { type: "text/markdown" });
   const file = new File([blob], filename, { type: "text/markdown" });
   const result = await supabase.storage
@@ -145,6 +147,69 @@ export async function getPlant(supabase: SupabaseClient<Database>, id: number): 
 
   
   return plant;
+}
+
+export async function upsertPlant(supabase: SupabaseClient<Database>, dto: PlantUpsertDto): Promise<boolean> {
+  // upsert plant
+  const upsertResult = await supabase.from('plant').upsert({
+    id: dto.id,
+    name: dto.name,
+    scientific_name: dto.scientificName,
+    image_url: dto.imageUrl,
+    family_id: dto.familyId,
+    growth_id: dto.growthId,
+    foliage_id: dto.foliageId,
+    shape_id: dto.shapeId,
+    water_id: dto.waterId,
+    lifespan_id: dto.lifespanId,
+    difficulty_id: dto.difficultyId,
+    type_id: dto.typeId,
+    low_height: dto.lowWidth,
+    high_height: dto.highHeight,
+    low_width: dto.lowWidth,
+    high_width: dto.highWidth,
+    content_url: dto.contentUrl
+  }).select('id').single();
+  if (upsertResult.data) {
+    let resultAssociation = true;
+    if (dto.usageIds.length > 0) {
+      resultAssociation = resultAssociation && await associateUsagesToPlant(supabase, upsertResult.data.id, dto.usageIds);
+    }
+    if (resultAssociation && dto.lightIds.length > 0) {
+      resultAssociation = resultAssociation && await associateLightsToPlant(supabase, upsertResult.data.id, dto.lightIds);
+    }
+    if (resultAssociation && dto.plantingMethodIds.length > 0) {
+      resultAssociation = resultAssociation && await associatePlantingMethodsToPlant(supabase, upsertResult.data.id, dto.plantingMethodIds);
+    }
+    if (resultAssociation && dto.soilHumiditieIds.length > 0) {
+      resultAssociation = resultAssociation && await associateSoilHumiditiesToPlant(supabase, upsertResult.data.id, dto.soilHumiditieIds);
+    }
+    if (resultAssociation && dto.soilPhIds.length > 0) {
+      resultAssociation = resultAssociation && await associateSoilPhsToPlant(supabase, upsertResult.data.id, dto.soilPhIds);
+    }
+    if (resultAssociation && dto.soilTypeIds.length > 0) {
+      resultAssociation = resultAssociation && await associateSoilTypesToPlant(supabase, upsertResult.data.id, dto.soilTypeIds);
+    }
+    if (resultAssociation && dto.soilTypeIds.length > 0) {
+      resultAssociation = resultAssociation && await associateSoilTypesToPlant(supabase, upsertResult.data.id, dto.soilTypeIds);
+    }
+    if (resultAssociation && dto.bloomSeasonIds.length > 0) {
+      resultAssociation = resultAssociation && await associateSeasonsToPlant(supabase, upsertResult.data.id, dto.bloomSeasonIds, 'plant_bloom_season');
+    }
+    if (resultAssociation && dto.harvestSeasonIds.length > 0) {
+      resultAssociation = resultAssociation && await associateSeasonsToPlant(supabase, upsertResult.data.id, dto.harvestSeasonIds, 'plant_harvest_season');
+    }
+    if (resultAssociation && dto.pruneSeasonIds.length > 0) {
+      resultAssociation = resultAssociation && await associateSeasonsToPlant(supabase, upsertResult.data.id, dto.pruneSeasonIds, 'plant_prune_season');
+    }
+    if (resultAssociation && dto.plantingSeasonIds.length > 0) {
+      resultAssociation = resultAssociation && await associateSeasonsToPlant(supabase, upsertResult.data.id, dto.plantingSeasonIds, 'plant_planting_season');
+    }
+    return resultAssociation;
+  } else {
+    console.error(upsertResult.error);
+    return false;
+  }
 }
 
 export async function getRangePlants(supabase: SupabaseClient<Database>, start: number, end: number): Promise<Plant[]> {

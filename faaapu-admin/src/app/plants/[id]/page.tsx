@@ -6,6 +6,7 @@ import UpsertPlantFormContainer from "@/app/components/upsert-plant-form-contain
 import { cookies } from "next/headers";
 import Link from "next/link";
 import Navbar from "@/app/components/navbar";
+import LoadingSpinner from "@/app/components/loading-spinner";
 
 export default async function PlantDetails({ params }: { params: { id: string } }) {
   const supabase = createServerComponentClient<Database>({ cookies });
@@ -19,7 +20,7 @@ export default async function PlantDetails({ params }: { params: { id: string } 
   }
 
   if (!plant) {
-    return <p>Chargement</p>;
+    return <LoadingSpinner />;
   }
 
   return (

@@ -6,12 +6,14 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
 import SortableSearchableTableHeader from "./sortable-searchable-table-header";
+import LoadingSpinner from "./loading-spinner";
 
 export type PlantTableProps = {
   plants: Plant[],
 }
 
 export default function PlantTable(props: PlantTableProps) {
+  const [loading, setLoading] = useState(false);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // asc or desc
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [filteredPlants, setFilteredPlants] = useState<Plant[]>(props.plants);
@@ -24,10 +26,12 @@ export default function PlantTable(props: PlantTableProps) {
   }, [sortOrder, sortColumn]);
 
   const viewPlantDetails = (plant: Plant) => {
+    setLoading(true);
     router.push(`/plants/${plant.id}`);
   };
 
   const updatePlant = (plant: Plant) => {
+    setLoading(true);
     router.push(`/plants/${plant.id}`);
   }
 
@@ -87,65 +91,68 @@ export default function PlantTable(props: PlantTableProps) {
       });
       setFilteredPlants(foundPlants);
     }
-    
+
   }
 
 
   return (
-    <table className="table table-zebra">
-      <thead>
-        <tr>
-        <SortableSearchableTableHeader
-            columnLabel="Id"
-            columnKey="id"
-            currentSortColumn={sortColumn}
-            sortOrder={sortOrder}
-            onClick={handleHeaderClick}
-            onSearch={searchPlant}
-          />
-          <th>Image</th>
-          <SortableSearchableTableHeader
-            columnLabel="Name"
-            columnKey="name"
-            currentSortColumn={sortColumn}
-            sortOrder={sortOrder}
-            onClick={handleHeaderClick}
-            onSearch={searchPlant}
-          />
-          <SortableSearchableTableHeader
-            columnLabel="Scientific Name"
-            columnKey="scientificName"
-            currentSortColumn={sortColumn}
-            sortOrder={sortOrder}
-            onClick={handleHeaderClick}
-            onSearch={searchPlant}
-          />
-          <SortableSearchableTableHeader
-            columnLabel="Family"
-            columnKey="family"
-            currentSortColumn={sortColumn}
-            sortOrder={sortOrder}
-            onClick={handleHeaderClick}
-            onSearch={searchPlant}
-          />
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {filteredPlants.map((plant) => <tr key={`row-plant-${plant.id}`}>
-          <td>{plant.id}</td>
-          <td><Image src={plant.imageUrl} alt={`image-${plant.name}`} width={200} height={200}></Image></td>
-          <td>{plant.name}</td>
-          <td>{plant.scientificName}</td>
-          <td>{plant.family}</td>
-          <td>
-            <div className="flex flex-row justify-between gap-5">
-              <button className="btn btn-primary" onClick={() => updatePlant(plant)}>Modifier</button>
-              <button className="btn btn-secondary" onClick={() => viewPlantDetails(plant)}>Voir</button>
-            </div>
-          </td>
-        </tr>)}
-      </tbody>
-    </table>
+    <>
+      {loading && <LoadingSpinner />}
+      <table className="table table-zebra">
+        <thead>
+          <tr>
+            <SortableSearchableTableHeader
+              columnLabel="Id"
+              columnKey="id"
+              currentSortColumn={sortColumn}
+              sortOrder={sortOrder}
+              onClick={handleHeaderClick}
+              onSearch={searchPlant}
+            />
+            <th>Image</th>
+            <SortableSearchableTableHeader
+              columnLabel="Name"
+              columnKey="name"
+              currentSortColumn={sortColumn}
+              sortOrder={sortOrder}
+              onClick={handleHeaderClick}
+              onSearch={searchPlant}
+            />
+            <SortableSearchableTableHeader
+              columnLabel="Scientific Name"
+              columnKey="scientificName"
+              currentSortColumn={sortColumn}
+              sortOrder={sortOrder}
+              onClick={handleHeaderClick}
+              onSearch={searchPlant}
+            />
+            <SortableSearchableTableHeader
+              columnLabel="Family"
+              columnKey="family"
+              currentSortColumn={sortColumn}
+              sortOrder={sortOrder}
+              onClick={handleHeaderClick}
+              onSearch={searchPlant}
+            />
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredPlants.map((plant) => <tr key={`row-plant-${plant.id}`}>
+            <td>{plant.id}</td>
+            <td><Image src={plant.imageUrl} alt={`image-${plant.name}`} width={200} height={200} className="rounded"></Image></td>
+            <td>{plant.name}</td>
+            <td>{plant.scientificName}</td>
+            <td>{plant.family}</td>
+            <td>
+              <div className="flex flex-row items-center gap-5">
+                <button className="btn btn-primary" onClick={() => updatePlant(plant)}>Modifier</button>
+                <button className="btn btn-secondary" onClick={() => viewPlantDetails(plant)}>Voir</button>
+              </div>
+            </td>
+          </tr>)}
+        </tbody>
+      </table>
+    </>
   );
 }

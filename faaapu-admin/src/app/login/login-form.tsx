@@ -36,16 +36,15 @@ export default function LoginForm({ session }: { session: Session | null }) {
       email,
       password,
     })
-    if (response.error && response.error.status) {
+    if (response.error) {
       if (response.error.status === 400) {
         setErrorMessage("identifiants incorrects");
       } else {
         setErrorMessage("impossible de se connecter");
         console.error(response.error);
       }
-    } else {
-      router.refresh()
     }
+    router.refresh()
   }
 
   // for the `session` to be available on first SSR render, it must be
@@ -66,8 +65,8 @@ export default function LoginForm({ session }: { session: Session | null }) {
         onChange={(e) => setPassword(e.target.value)}
         value={password} />
       {errorMessage ? <label className='text-red-500'>{errorMessage}</label> : <></>}
-      <button onClick={handleSignIn} className='btn btn-primary'>Sign in</button>
-      <button onClick={handleSignUp} className='btn btn-secondary'>Sign up</button>
+      <button onClick={() => handleSignIn()} className='btn btn-primary'>Sign in</button>
+      <button onClick={() => handleSignUp()} className='btn btn-secondary'>Sign up</button>
     </>
   )
 }

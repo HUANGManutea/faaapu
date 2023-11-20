@@ -13,7 +13,7 @@ import { SimpleProperty } from "../model/property";
 import { Season } from "../model/season";
 import SeasonComponent from "./season-component";
 import ContentView from "./content-view";
-import { consolidatePlantWithContent, deleteContent, deleteImage, uploadContent, uploadImage } from "../db/plant-repository";
+import { consolidatePlantWithContent, deleteContent, deleteImage, uploadContent, uploadImage, upsertPlant } from "../db/plant-repository";
 import { createFamily, createSeasons, createShape, createType, createUsages } from "../db/property-repository";
 import { UploadResult } from "../model/upload-result";
 
@@ -84,7 +84,7 @@ export default function UpsertPlantForm({
   const [pruneSeasons, setPruneSeasons] = useState<Season[]>();
   const [plantingSeasons, setPlantingSeasons] = useState<Season[]>();
   const [contentFilename, setContentFilename] = useState("");
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState<string>();
   const supabase = createClientComponentClient<Database>();
 
   const init = async () => {
@@ -189,15 +189,6 @@ export default function UpsertPlantForm({
     }
   }
 
-  const onSubmit = (dto: PlantUpsertDto) => {
-    // if (plant) {
-
-    // } else {
-
-    // }
-    console.log(dto);
-  }
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const uploadResult = await uploadNewData();
@@ -223,13 +214,13 @@ export default function UpsertPlantForm({
         soilHumiditieIds: selectedSoilHumidities!.map(v => v.value),
         soilPhIds: selectedSoilPhs!.map(v => v.value),
         soilTypeIds: selectedSoilTypes!.map(v => v.value),
-        bloomSeasonIds: uploadResult.bloomSeasonIds ?? bloomSeasons?.map(s => s.id!),
-        harvestSeasonIds: uploadResult.harvestSeasonIds ?? harvestSeasons?.map(s => s.id!),
-        pruneSeasonIds: uploadResult.pruneSeasonIds ?? pruneSeasons?.map(s => s.id!),
-        plantingSeasonIds: uploadResult.plantingSeasonIds ?? plantingSeasons?.map(s => s.id!),
+        bloomSeasonIds: uploadResult.bloomSeasonIds ?? bloomSeasons?.map(s => s.id!) ?? [],
+        harvestSeasonIds: uploadResult.harvestSeasonIds ?? harvestSeasons?.map(s => s.id!) ?? [],
+        pruneSeasonIds: uploadResult.pruneSeasonIds ?? pruneSeasons?.map(s => s.id!) ?? [],
+        plantingSeasonIds: uploadResult.plantingSeasonIds ?? plantingSeasons?.map(s => s.id!) ?? [],
         contentUrl: uploadResult.contentUrl ?? contentFilename,
       };
-      onSubmit(dto);
+      await upsertPlant(supabase, dto);
     }
   }
 
@@ -328,7 +319,7 @@ export default function UpsertPlantForm({
         }
       }
     }
-    if (content !== "" && content !== plant?.content) {
+    if (content && content !== plant?.content) {
       const isUpdate = contentFilename === plant?.content;
       await deleteContent(supabase, contentFilename);
       const createdFileName = await uploadContent(supabase, content, contentFilename, isUpdate);
@@ -374,7 +365,7 @@ export default function UpsertPlantForm({
                 </label>
                 <input type="file" accept="image/png, image/jpeg" className="file-input file-input-bordered w-full max-w-xs" onChange={loadImage} />
               </div>
-              {(imageUrl && imageUrl !== '') ? <Image src={imageUrl} alt={name} width={200} height={200}></Image> : <></>}
+              {(imageUrl && imageUrl !== '') ? <Image src={imageUrl} alt={name} width={200} height={200} className="rounded"></Image> : <></>}
             </div>
             <div className="form-control w-full max-w-xs">
               <label className="label">
