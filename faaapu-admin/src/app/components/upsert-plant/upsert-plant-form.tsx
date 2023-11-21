@@ -15,7 +15,7 @@ import ContentView from "../content-view";
 import { deleteContent, deleteImage, uploadContent, uploadImage, upsertPlant } from "../../db/plant-repository";
 import { createFamily, createSeasons, createShape, createType, createUsages } from "../../db/property-repository";
 import { PlantUploadResult } from "../../model/plant-upload-result";
-import { useAlert } from "../../providers/alert-provider";
+import { useAlert } from "../../contexts/alert-context";
 import { AlertType } from "../alert";
 
 

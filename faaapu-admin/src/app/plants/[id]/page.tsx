@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import Navbar from "@/app/components/navbar";
 import LoadingSpinner from "@/app/components/loading-spinner";
-import AlertProvider from "@/app/providers/alert-provider";
+import AlertProvider from "@/app/contexts/alert-context";
 import UpsertGuideForm from "@/app/components/upsert-guide/upsert-guide-form";
 
 export default async function PlantDetails({ params }: { params: { id: string } }) {

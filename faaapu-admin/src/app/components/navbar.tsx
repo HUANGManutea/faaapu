@@ -1,41 +1,25 @@
 'use client';
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { User, createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Database } from "../../../types/supabase";
-import { useEffect, useState } from "react";
 import { PrevRoute } from "../model/prev-route";
+import { userContext } from "../contexts/user-context";
 
 type NavbarProps = {
   prevRoute?: PrevRoute
 }
 
-export default function Navbar(props: NavbarProps) {
-  const [loading, setLoading] = useState(true);
-  const [initCalled, setInitCalled] = useState(false);
-
-  const [user, setUser] = useState<User>();
-  const supabase = createClientComponentClient<Database>();
+export default function Navbar({ prevRoute }: NavbarProps) {
   const router = useRouter();
+  const context = userContext();
+  const supabase = createClientComponentClient<Database>();
 
-  const init = async () => {
-    const userResult = await supabase.auth.getUser();
-    if (userResult.data && userResult.data.user) {
-      setUser(userResult.data.user);
-    } else {
-      router.push('/');
-    }
-    setLoading(false);
-    setInitCalled(true);
+  if (!context) {
+    router.push('/');
   }
-
-  useEffect(() => {
-    if (loading && !initCalled) {
-      init();
-    }
-  }, [loading, initCalled]);
 
 
   const handleSignOut = async () => {
@@ -50,13 +34,13 @@ export default function Navbar(props: NavbarProps) {
   return (
     <div className="navbar bg-green-900 text-white">
       <div className="navbar-start">
-        {props.prevRoute ? <Link href={props.prevRoute.href} className="btn btn-ghost">{`< ${props.prevRoute.label}`}</Link> : <></>}
+        {prevRoute ? <Link href={prevRoute.href} className="btn btn-ghost">{`< ${prevRoute.label}`}</Link> : <></>}
       </div>
       <div className="navbar-center">
         <Link href="/" className="btn btn-ghost text-xl">Fa'a'apu</Link>
       </div>
       <div className="navbar-end flex flex-row gap-5">
-        {user?.email && <Link href={"/account"} className="btn btn-ghost">{user.email}</Link>}
+      <Link href={"/account"} className="btn btn-ghost">{context?.userProfile?.username ? context.userProfile.username : "Veuillez cliquer ici pour renseigner votre pseudo"}</Link>
         <button onClick={() => handleSignOut()} className="btn btn-ghost flex flex-row gap-2 items-center">
           <FontAwesomeIcon icon={faArrowRightFromBracket} className="h-5" />
           <span>Déconnexion</span>

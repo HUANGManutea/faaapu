@@ -21,14 +21,18 @@ export default function LoginForm({ session }: { session: Session | null }) {
   }, [session]);
 
   const handleSignUp = async () => {
-    await supabase.auth.signUp({
+    const { data: { user, session } } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: `${location.origin}/auth/callback`,
       },
-    })
-    router.refresh()
+    });
+    if (user) {
+      router.push('/account');
+    } else {
+      router.refresh()
+    }
   }
 
   const handleSignIn = async () => {

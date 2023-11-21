@@ -1,6 +1,6 @@
 import Navbar from "@/app/components/navbar";
 import UpsertGuideForm from "@/app/components/upsert-guide/upsert-guide-form";
-import AlertProvider from "@/app/providers/alert-provider";
+import AlertProvider from "@/app/contexts/alert-context";
 
 export default function CreateGuide() {
   return (

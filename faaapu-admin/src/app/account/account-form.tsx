@@ -4,69 +4,43 @@ import { Database } from '../../../types/supabase'
 import { Session, createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
 import Alert, { AlertData, AlertType } from '../components/alert'
-import { useAlert } from '../providers/alert-provider'
+import { useAlert } from '../contexts/alert-context'
+import { userContext } from '../contexts/user-context'
 
 export default function AccountForm({ session }: { session: Session | null }) {
   const supabase = createClientComponentClient<Database>()
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [fullname, setFullname] = useState<string | null>(null)
   const [username, setUsername] = useState<string | null>(null)
-  const [avatar_url, setAvatarUrl] = useState<string | null>(null)
   const { showAlert } = useAlert();
+  const context = userContext();
   const router = useRouter()
-  const user = session?.user
 
-  const getProfile = useCallback(async () => {
-    if (!user) {
+  if (!context?.userProfile) {
       router.push('/');
-    } else {
-      try {
-        setLoading(true)
-  
-        let { data, error, status } = await supabase
-          .from('profiles')
-          .select(`full_name, username, avatar_url`)
-          .eq('id', user?.id)
-          .single()
-  
-        if (error && status !== 406) {
-          throw error
-        }
-  
-        if (data) {
-          setFullname(data.full_name)
-          setUsername(data.username)
-          setAvatarUrl(data.avatar_url)
-        }
-      } catch (error) {
-        console.log(error);
-        showAlert({text: 'Impossible de charger votre compte', type: AlertType.ERROR});
-      } finally {
-        setLoading(false)
-      }
-    }
-  }, [user, supabase])
+      return <></>;
+  }
 
   useEffect(() => {
-    getProfile()
-  }, [user, getProfile])
+    if (context.userProfile) {
+      setFullname(context.userProfile.fullName);
+      setUsername(context.userProfile.username);
+    }
+  }, [context]);
 
   async function updateProfile({
     username,
-    avatar_url,
   }: {
     username: string | null
     fullname: string | null
-    avatar_url: string | null
   }) {
     try {
       setLoading(true)
 
       let { error } = await supabase.from('profiles').upsert({
-        id: user?.id as string,
+        id: context?.userProfile?.id as string,
         full_name: fullname,
         username,
-        avatar_url,
         updated_at: new Date().toISOString(),
       })
       if (error) throw error
@@ -91,8 +65,8 @@ export default function AccountForm({ session }: { session: Session | null }) {
   }
 
   const deleteAccount = async () => {
-    if (user) {
-      const deleteUserResponse = await fetch(`/api/account/${user.id}`, {
+    if (context.userProfile) {
+      const deleteUserResponse = await fetch(`/api/account/${context.userProfile.id}`, {
         method: 'DELETE',
       });
       const deleteUserResult = await deleteUserResponse.json();
@@ -145,7 +119,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
       <div className="flex flex-col gap-5 w-full items-center">
         <button
           className="btn btn-primary w-full max-w-sm rounded-md"
-          onClick={() => updateProfile({ fullname, username, avatar_url })}
+          onClick={() => updateProfile({ fullname, username })}
           disabled={loading}
         >
           {loading ? 'Chargement ...' : 'Sauvegarder'}

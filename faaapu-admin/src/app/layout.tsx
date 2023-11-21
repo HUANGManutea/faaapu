@@ -2,6 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Footer from './components/footer'
+import { UserProvider } from './contexts/user-context'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,8 +22,10 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="32x32" href="faaapu-favicon-32x32.png"/>
       </head>
       <body className={inter.className}>
-        {children}
-        <Footer></Footer>
+        <UserProvider>
+          {children}
+          <Footer></Footer>
+        </UserProvider>
       </body>
     </html>
   )

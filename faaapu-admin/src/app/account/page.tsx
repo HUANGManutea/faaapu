@@ -3,7 +3,7 @@ import { cookies } from "next/headers"
 import { Database } from "../../../types/supabase"
 import Navbar from "../components/navbar"
 import AccountForm from "./account-form"
-import AlertProvider from "../providers/alert-provider"
+import AlertProvider from "../contexts/alert-context"
 
 export default async function Account() {
   const supabase = createServerComponentClient<Database>({ cookies })

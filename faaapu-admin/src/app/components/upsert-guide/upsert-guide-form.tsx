@@ -6,7 +6,7 @@ import ContentView from "../content-view";
 import Image from 'next/image';
 import { GuideUpsertDto } from "@/app/model/guide-upsert-dto";
 import { GuideUploadResult } from "@/app/model/guide-upload-result";
-import { useAlert } from "@/app/providers/alert-provider";
+import { useAlert } from "@/app/contexts/alert-context";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "../../../../types/supabase";
 import { deleteContent, deleteImage, uploadContent, uploadImage, upsertGuide } from "@/app/db/guide-repository";

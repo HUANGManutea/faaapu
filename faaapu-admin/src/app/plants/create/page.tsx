@@ -1,6 +1,6 @@
 import Navbar from "@/app/components/navbar";
 import UpsertPlantFormContainer from "@/app/components/upsert-plant/upsert-plant-form-container";
-import AlertProvider from "@/app/providers/alert-provider";
+import AlertProvider from "@/app/contexts/alert-context";
 
 export default function CreatePlant() {
   return (
