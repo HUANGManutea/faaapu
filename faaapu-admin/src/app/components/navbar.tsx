@@ -3,7 +3,7 @@ import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { User, createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
-import { RedirectType, redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Database } from "../../../types/supabase";
 import { useEffect, useState } from "react";
 import { PrevRoute } from "../model/prev-route";
@@ -56,7 +56,7 @@ export default function Navbar(props: NavbarProps) {
         <Link href="/" className="btn btn-ghost text-xl">Fa'a'apu</Link>
       </div>
       <div className="navbar-end flex flex-row gap-5">
-        <label>{user?.email}</label>
+        {user?.email && <Link href={"/account"} className="btn btn-ghost">{user.email}</Link>}
         <button onClick={() => handleSignOut()} className="btn btn-ghost flex flex-row gap-2 items-center">
           <FontAwesomeIcon icon={faArrowRightFromBracket} className="h-5" />
           <span>Déconnexion</span>

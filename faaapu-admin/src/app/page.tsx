@@ -1,7 +1,7 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { Database } from "../../types/supabase"
 import { cookies } from "next/headers"
-import PlantTable from "./components/plant-table";
+import PlantTable from "./plants/plant-table";
 import { getRangePlants } from "./db/plant-repository";
 import Image from 'next/image';
 import Link from "next/link";
@@ -33,22 +33,22 @@ export default async function Home() {
           <p>Explorez des conseils pratiques et des astuces de jardinage spécifiques au Fenua.</p>
           <p>Découvrez les meilleures pratiques pour cultiver des plantes locales, créer de magnifiques jardins et embellir votre espace extérieur.</p>
         </HomeSection>
-        <HomeSection imgSrc="/images/home-agriculteur.webp" imgAlt="agriculture" leftToRight={false}>
+        <HomeSection imgSrc="/images/home/home-agriculteur.webp" imgAlt="agriculture" leftToRight={false}>
           <h2>Plantes utiles pour les agriculteurs</h2>
           <p>Découvrez les plantes qui peuvent améliorer votre agriculture en Polynésie-Française.</p>
           <p>Apprenez comment les agriculteurs locaux tirent parti de la flore pour nourrir le Fenua et soutenir leur économie.</p>
         </HomeSection>
-        <HomeSection imgSrc="/images/home-flore.webp" imgAlt="flore locale" leftToRight>
+        <HomeSection imgSrc="/images/home/home-flore.webp" imgAlt="flore locale" leftToRight>
           <h2>Découvrez la Flore Locale</h2>
           <p>Explorez la diversité de la flore de la Polynésie-Française.</p>
           <p>Découvrez des plantes uniques, des arbres majestueux aux fleurs exotiques, et apprenez-en davantage sur leur utilisation traditionnelle, leurs propriétés médicinales et leur importance culturelle.</p>
         </HomeSection>
-        <HomeSection imgSrc="/images/home-resource.webp" imgAlt="ressources" leftToRight={false}>
+        <HomeSection imgSrc="/images/home/home-resource.webp" imgAlt="ressources" leftToRight={false}>
           <h2>Ressources Utiles</h2>
           <p>Trouvez des ressources pratiques pour entretenir votre jardin, cultiver des plantes locales et découvrir la flore de la région.</p>
           <p>Consultez nos guides, nos recommandations de livres et nos informations utiles pour mieux connaître la nature polynésienne.</p>
         </HomeSection>
-        <HomeSection imgSrc="/images/home-share.webp" imgAlt="partage" leftToRight>
+        <HomeSection imgSrc="/images/home/home-share.webp" imgAlt="partage" leftToRight>
         <h2>Partagez Vos Connaissances</h2>
           <p>Via votre espace utilisateur, nous vous encourageons à partager vos connaissances, vos expériences et vos histoires sur la flore de la Polynésie-Française.</p>
           <p>Contribuez à enrichir notre encyclopédie en partageant vos observations, vos photos et vos conseils pour que d'autres puissent en bénéficier.</p>

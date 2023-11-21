@@ -1,4 +1,4 @@
-export interface UploadResult {
+export interface PlantUploadResult {
   familyId?: number,
   imageUrl?: string,
   shapeId?: number,

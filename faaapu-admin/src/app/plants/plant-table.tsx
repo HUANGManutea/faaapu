@@ -5,8 +5,8 @@ import Image from 'next/image';
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
-import SortableSearchableTableHeader from "./sortable-searchable-table-header";
-import LoadingSpinner from "./loading-spinner";
+import SortableSearchableTableHeader from "../components/sortable-searchable-table-header";
+import LoadingSpinner from "../components/loading-spinner";
 
 export type PlantTableProps = {
   plants: Plant[],

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { Season } from "../model/season";
+import { Season } from "../../model/season";
 
 type SeasonComponentProps = {
   seasons?: Season[],

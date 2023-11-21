@@ -31,6 +31,7 @@ export async function deleteImage(supabase: SupabaseClient<Database>, imageUrl: 
   }
   return result.error == null;
 }
+
 export async function uploadImage(supabase: SupabaseClient<Database>, file: File): Promise<string> {
   const result = await supabase.storage
       .from('plants')

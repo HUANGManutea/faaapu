@@ -48,8 +48,12 @@ export default function PaginationView(props: PaginationViewProps) {
     props.onSelectItemsPerPageChange(newItemsPerPage, range);
   }
 
-  if (!props.count) {
-    return <p>Chargment...</p>;
+  if (props.count == null) {
+    return <p>Chargement...</p>;
+  }
+
+  if (props.count === 0) {
+    return <p>Aucun élément à afficher</p>;
   }
 
 

@@ -1,21 +1,22 @@
 'use client';
 
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { Plant } from "../model/plant"
-import { PlantUpsertDto } from "../model/plant-upsert-dto";
-import Select, { MultiValue, SingleValue } from 'react-select';
+import { Plant } from "../../model/plant"
+import { PlantUpsertDto } from "../../model/plant-upsert-dto";
+import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Database } from "../../../types/supabase";
+import { Database } from "../../../../types/supabase";
 import Image from 'next/image';
-import { IntOption, StringOption } from '../model/option';
-import { SimpleProperty } from "../model/property";
-import { Season } from "../model/season";
+import { IntOption } from '../../model/option';
+import { Season } from "../../model/season";
 import SeasonComponent from "./season-component";
-import ContentView from "./content-view";
-import { consolidatePlantWithContent, deleteContent, deleteImage, uploadContent, uploadImage, upsertPlant } from "../db/plant-repository";
-import { createFamily, createSeasons, createShape, createType, createUsages } from "../db/property-repository";
-import { UploadResult } from "../model/upload-result";
+import ContentView from "../content-view";
+import { deleteContent, deleteImage, uploadContent, uploadImage, upsertPlant } from "../../db/plant-repository";
+import { createFamily, createSeasons, createShape, createType, createUsages } from "../../db/property-repository";
+import { PlantUploadResult } from "../../model/plant-upload-result";
+import { useAlert } from "../../providers/alert-provider";
+import { AlertType } from "../alert";
 
 
 type UpsertPlantFormProps = {
@@ -83,9 +84,10 @@ export default function UpsertPlantForm({
   const [harvestSeasons, setHarvestSeasons] = useState<Season[]>();
   const [pruneSeasons, setPruneSeasons] = useState<Season[]>();
   const [plantingSeasons, setPlantingSeasons] = useState<Season[]>();
-  const [contentFilename, setContentFilename] = useState("");
+  const [contentUrl, setContentUrl] = useState("");
   const [content, setContent] = useState<string>();
   const supabase = createClientComponentClient<Database>();
+  const { showAlert } = useAlert();
 
   const init = async () => {
     if (plant?.family) {
@@ -158,7 +160,7 @@ export default function UpsertPlantForm({
     }
 
     if (plant?.contentUrl) {
-      setContentFilename(plant.contentUrl);
+      setContentUrl(plant.contentUrl);
     }
 
     if (plant?.content) {
@@ -195,6 +197,7 @@ export default function UpsertPlantForm({
     console.log("uploadResult", uploadResult);
     if (uploadResult.error) {
       console.log(uploadResult.error);
+      showAlert({ text: "Impossible d'enregistrer les changements", type: AlertType.ERROR });
     } else {
       const dto: PlantUpsertDto = {
         name: name,
@@ -218,14 +221,19 @@ export default function UpsertPlantForm({
         harvestSeasonIds: uploadResult.harvestSeasonIds ?? harvestSeasons?.map(s => s.id!) ?? [],
         pruneSeasonIds: uploadResult.pruneSeasonIds ?? pruneSeasons?.map(s => s.id!) ?? [],
         plantingSeasonIds: uploadResult.plantingSeasonIds ?? plantingSeasons?.map(s => s.id!) ?? [],
-        contentUrl: uploadResult.contentUrl ?? contentFilename,
+        contentUrl: uploadResult.contentUrl ?? contentUrl,
       };
-      await upsertPlant(supabase, dto);
+      const upsertPlantResult = await upsertPlant(supabase, dto);
+      if (upsertPlantResult) {
+        showAlert({ text: "Changements enregistrés !", type: AlertType.SUCCESS });
+      } else {
+        showAlert({ text: "Impossible d'enregistrer les changements", type: AlertType.ERROR });
+      }
     }
   }
 
   const uploadNewData = async () => {
-    const uploadResult: UploadResult = {
+    const uploadResult: PlantUploadResult = {
     };
 
     if (selectedFamily && !familyOptions.find(option => option.label === selectedFamily.label)) {
@@ -320,9 +328,9 @@ export default function UpsertPlantForm({
       }
     }
     if (content && content !== plant?.content) {
-      const isUpdate = contentFilename === plant?.content;
-      await deleteContent(supabase, contentFilename);
-      const createdFileName = await uploadContent(supabase, content, contentFilename, isUpdate);
+      const isUpdate = contentUrl === plant?.content;
+      await deleteContent(supabase, contentUrl);
+      const createdFileName = await uploadContent(supabase, content, contentUrl, isUpdate);
       if (createdFileName !== '') {
         uploadResult.contentUrl = createdFileName;
       } else {

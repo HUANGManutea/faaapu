@@ -16,7 +16,7 @@ export default function LoginForm({ session }: { session: Session | null }) {
   useEffect(() => {
     // Check if the user is already authenticated and redirect if necessary
     if (session) {
-      router.push('/plants'); // Redirect to "/plants" if the user is authenticated
+      router.push('/home'); // Redirect to "/home" if the user is authenticated
     }
   }, [session]);
 

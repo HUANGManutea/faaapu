@@ -4,19 +4,14 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import PlantTable from "./plant-table";
 import { Database } from "../../../types/supabase";
 import { countNbPlants, getRangePlants } from "../db/plant-repository";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Plant } from "../model/plant";
 import { ItemRange } from "../model/item-range";
-import Pagination from "./pagination";
-import PaginationView from "./pagination-view";
+import PaginationView from "../components/pagination-view";
 import { useRouter } from "next/navigation";
-import LoadingSpinner from "./loading-spinner";
+import LoadingSpinner from "../components/loading-spinner";
 
-type PlantsComponentProps = {
-
-};
-
-export default function PlantsComponent(props: PlantsComponentProps) {
+export default function PlantsComponent() {
   const [loading, setLoading] = useState(true);
   const [initCalled, setInitCalled] = useState(false);
   const [plants, setPlants] = useState<Plant[]>([]);

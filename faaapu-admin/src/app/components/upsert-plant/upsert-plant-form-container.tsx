@@ -1,10 +1,10 @@
 import { cookies } from "next/headers";
-import { Database } from "../../../types/supabase";
-import { PropertyTableName, getAllPropertyList, getFamilies, getSeasons } from "../db/property-repository";
-import { Plant } from "../model/plant";
+import { Database } from "../../../../types/supabase";
+import { PropertyTableName, getAllPropertyList, getFamilies, getSeasons } from "../../db/property-repository";
+import { Plant } from "../../model/plant";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Property, SimpleProperty } from "../model/property";
-import { IntOption, StringOption } from "../model/option";
+import { Property, SimpleProperty } from "../../model/property";
+import { IntOption } from "../../model/option";
 import UpsertPlantForm from "./upsert-plant-form";
 
 type UpsertPlantFormContainerProps = {
